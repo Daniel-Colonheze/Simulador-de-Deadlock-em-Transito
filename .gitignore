@@ -8,4 +8,4 @@ build/
 
 # Arquivos de ambiente
 .env
-.env.local
+.env.localnode_modules/ 
