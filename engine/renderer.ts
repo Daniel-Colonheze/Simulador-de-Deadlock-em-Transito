@@ -138,7 +138,8 @@ export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolea
   // Windshield
   ctx.fillStyle = broken ? "rgba(80,30,30,0.6)" : "rgba(0,0,0,0.45)";
   if (isV) {
-    const frontY = cfg.dir === 1 ? -ch / 2 + 4 : ch / 2 - 11;
+    // Invertido: dir=1 (north, descendo) para-brisa embaixo; dir=-1 (south, subindo) para-brisa em cima
+    const frontY = cfg.dir === 1 ? ch / 2 - 11 : -ch / 2 + 4;
     ctx.fillRect(-cw / 2 + 3, frontY, cw - 6, 7);
   } else {
     const frontX = cfg.dir === -1 ? -cw / 2 + 4 : cw / 2 - 11;
@@ -150,8 +151,9 @@ export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolea
   const tlColor = "rgba(255,80,80,0.7)";
   ctx.fillStyle = hlColor;
   if (isV) {
-    const frontY = cfg.dir === 1 ? -ch / 2 + 3 : ch / 2 - 3;
-    const rearY  = cfg.dir === 1 ? ch / 2 - 3  : -ch / 2 + 3;
+    // Invertido: dir=1 (north, descendo) faróis embaixo; dir=-1 (south, subindo) faróis em cima
+    const frontY = cfg.dir === 1 ? ch / 2 - 3 : -ch / 2 + 3;
+    const rearY  = cfg.dir === 1 ? -ch / 2 + 3  : ch / 2 - 3;
     [frontY].forEach(hy => {
       ctx.beginPath(); ctx.arc(-cw/2+4, hy, 2.5, 0, Math.PI*2); ctx.fill();
       ctx.beginPath(); ctx.arc( cw/2-4, hy, 2.5, 0, Math.PI*2); ctx.fill();

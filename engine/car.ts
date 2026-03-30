@@ -168,7 +168,8 @@ export class Car {
       const gap    = (ledPos - myPos) * cfg.dir; // positive = leader is ahead
       if (gap > 0 && gap < minGap) minGap = gap;
     }
-    const SAFE_GAP = CAR_BODY_LEN + 10;
+    // Gap seguro: metade do carro atual + metade do carro da frente + espaço de segurança
+    const SAFE_GAP = CAR_BODY_LEN + 15;
     if (minGap < SAFE_GAP) {
       this.state = "waiting";
       this.waitTime++;
@@ -180,9 +181,10 @@ export class Car {
     const dist = this.distToStopLine();
     const stopBuffer = this.speed + 2;
     if (dist > 0 && dist < stopBuffer && !this.isPastStopLine() && !canEnterIntersection) {
-      // Snap to stop line
-      if (cfg.axis === "y") this.y = cfg.stopLine - cfg.dir * 1;
-      else                   this.x = cfg.stopLine - cfg.dir * 1;
+      // Para antes da linha de parada (metade do comprimento do carro + margem)
+      const stopOffset = CAR_BODY_LEN / 2 + 5;
+      if (cfg.axis === "y") this.y = cfg.stopLine - cfg.dir * stopOffset;
+      else                   this.x = cfg.stopLine - cfg.dir * stopOffset;
       this.state = "waiting";
       this.waitTime++;
       this.updateSmoke();
