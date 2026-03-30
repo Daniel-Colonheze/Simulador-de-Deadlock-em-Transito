@@ -13,7 +13,7 @@
 
 An interactive simulation of the classic **deadlock** problem applied to a traffic intersection — where cars compete for crossing rights and can lock the entire system. The project implements a **traffic light** solution to prevent collisions and deadlocks.
 
-> ⚠️ **Honest note:** A good part of this project was **vibe coded** with AI assistance. That said, it was a real opportunity to practice and test my skills in **React**, **Tailwind CSS**, and **TypeScript** — and I also got to learn how to use the **HTML5 Canvas API**, which was completely new to me.
+> ⚠️ **Honest note:** A good part of this project was **vibe coded** with AI assistance. That said, it was a real opportunity to practice and test my skills in **React**, **Tailwind CSS**, and **TypeScript** — and I also got to learn how to work with **HTML5 Canvas**, which was completely new to me.
 
 ---
 
@@ -144,7 +144,7 @@ Developed by **Daniel Colonheze** — [GitHub](https://github.com/Daniel-Colonhe
 
 Uma simulação interativa do clássico problema de **deadlock** aplicado a um cruzamento de trânsito — onde carros disputam a passagem e podem travar o sistema inteiro. O projeto implementa uma solução com **semáforos** para evitar colisões e impasses.
 
-> ⚠️ **Nota honesta:** Boa parte deste projeto foi **vibe codada** com auxílio de IA. Mesmo assim, foi uma oportunidade real de praticar e testar minhas habilidades em **React**, **Tailwind CSS** e **TypeScript** — e também aprendi a usar a **API de Canvas do HTML5**, que era completamente nova pra mim.
+> ⚠️ **Nota honesta:** Boa parte deste projeto foi **vibe codada** com auxílio de IA. Mesmo assim, foi uma oportunidade real de praticar e testar minhas habilidades em **React**, **Tailwind CSS** e **TypeScript** — e também aprendi a trabalhar com **Canvas do HTML5**, que era completamente novo pra mim.
 
 ---
 
