@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(netstat -ano)",
+      "Bash(taskkill /PID 7192 /F)",
+      "Bash(taskkill:*)",
+      "Bash(powershell.exe -Command \"Get-Process -Id 7192 -ErrorAction SilentlyContinue | Stop-Process -Force; Get-Process -Id 5612 -ErrorAction SilentlyContinue | Stop-Process -Force; Get-Process -Id 4972 -ErrorAction SilentlyContinue | Stop-Process -Force\")",
+      "Bash(cmd //c \"taskkill /PID 7192 /F\" 2>&1)",
+      "Bash(cmd //c \"taskkill /PID 5612 /F\" 2>&1)",
+      "Bash(cmd //c \"taskkill /PID 4972 /F\" 2>&1)"
+    ]
+  }
+}
