@@ -12,7 +12,9 @@
       "Bash(cmd //c \"taskkill /PID 4972 /F\" 2>&1)",
       "Bash(curl -s http://localhost:3000/)",
       "Bash(npx tsc:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }

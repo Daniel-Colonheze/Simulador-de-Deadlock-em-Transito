@@ -181,8 +181,8 @@ export class Car {
     const dist = this.distToStopLine();
     const stopBuffer = this.speed + 2;
     if (dist > 0 && dist < stopBuffer && !this.isPastStopLine() && !canEnterIntersection) {
-      // Para antes da linha de parada (metade do comprimento do carro + margem)
-      const stopOffset = CAR_BODY_LEN / 2 + 5;
+      // Para completamente antes da linha de parada (comprimento total do carro + margem de segurança)
+      const stopOffset = CAR_BODY_LEN + 12;
       if (cfg.axis === "y") this.y = cfg.stopLine - cfg.dir * stopOffset;
       else                   this.x = cfg.stopLine - cfg.dir * stopOffset;
       this.state = "waiting";
