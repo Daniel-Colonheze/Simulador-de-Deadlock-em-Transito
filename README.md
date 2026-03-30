@@ -139,12 +139,138 @@ Developed by Daniel Colonheze – GitHub
 
 Project inspired by the classic Dining Philosophers Problem applied to traffic systems.
 
-⭐ Acknowledgements
-Professors and peers who discussed deadlock solutions.
 
-Next.js and Tailwind CSS communities for excellent documentation.
+Versão em Português
+https://img.shields.io/badge/Next.js-14.1.0-black
+https://img.shields.io/badge/TypeScript-5.3.0-blue
+https://img.shields.io/badge/Tailwind-3.4.1-38B2AC
 
-Vercel for seamless deployment.
+Uma simulação interativa do clássico problema de deadlock (impasse) aplicado a um cruzamento de trânsito, onde carros disputam a passagem e podem travar o sistema. O projeto implementa uma solução baseada em semáforos para evitar colisões e deadlocks.
 
-<hr style="border-top: 3px solid #ccc; margin: 40px 0;" />
-<a name="versão-em-português"></a>
+https://via.placeholder.com/800x400?text=Simulador+em+Funcionamento
+(Substitua por um print ou GIF da sua aplicação)
+
+🧠 Sobre o Problema
+O problema simula um cruzamento onde carros chegam pelas quatro direções (Norte, Sul, Leste, Oeste) e tentam atravessar. No modo deadlock, os carros não obedecem a nenhuma regra – eles simplesmente entram e podem colidir ou se bloquear mutuamente, paralisando o sistema (deadlock). No modo solução, um sistema de semáforos coordena a passagem, permitindo fluxo seguro e evitando impasses.
+
+Este problema é análogo ao Jantar dos Filósofos, onde recursos compartilhados (as faixas do cruzamento) causam espera circular se não houver um mecanismo de controle.
+
+🎯 Funcionalidades
+🔁 Dois modos de simulação:
+
+deadlock – sem controle, carros entram livremente e podem colidir/travar.
+
+solution – semáforos controlam a entrada, evitando deadlocks.
+
+🚦 Semáforos personalizados:
+
+Verticais para Norte/Sul, horizontais para Leste/Oeste.
+
+Cores com ordem correta (vermelho voltado para os carros).
+
+🚗 Carros com detecção de colisão e comportamento de fila:
+
+Respeitam a linha de parada.
+
+Só avançam se o semáforo estiver verde e o cruzamento estiver livre.
+
+📊 Estatísticas em tempo real:
+
+Carros completados, aguardando, em colisão, cruzando.
+
+Indicador de deadlock com efeito visual.
+
+📱 Design responsivo:
+
+Canvas redimensiona automaticamente para caber em qualquer tela (mobile, tablet, desktop).
+
+Botões e estatísticas se adaptam ao tamanho.
+
+🎨 Tema escuro moderno com Tailwind CSS.
+
+🧩 Ícones da biblioteca Lucide React (cone de trânsito no cabeçalho, favicon personalizado).
+
+🛠️ Tecnologias Utilizadas
+Área	Tecnologia
+Framework	Next.js 14 (App Router)
+Linguagem	TypeScript
+Estilização	Tailwind CSS
+Animações	Framer Motion
+Ícones	Lucide React
+Canvas	API nativa do HTML5
+Deploy	Vercel
+🚀 Como Executar Localmente
+Pré-requisitos
+Node.js 18.x ou superior
+
+npm ou yarn
+
+Passos
+Clone o repositório
+
+bash
+git clone https://github.com/Daniel-Colonheze/Simulador-de-Deadlock-em-Transito.git
+cd Simulador-de-Deadlock-em-Transito
+Instale as dependências
+
+bash
+npm install
+# ou
+yarn install
+Execute o servidor de desenvolvimento
+
+bash
+npm run dev
+# ou
+yarn dev
+Acesse no navegador
+
+text
+http://localhost:3000
+O projeto está configurado para usar Tailwind CSS e TypeScript. Não são necessárias variáveis de ambiente.
+
+🧪 Como Usar
+Na página inicial, você verá dois cards: Deadlock (sem controle) e Solução com Semáforos.
+
+Clique em Iniciar para começar a simulação.
+
+Observe os carros surgirem e se movimentarem.
+
+No modo deadlock, os carros irão colidir e o sistema pode travar (deadlock).
+
+No modo solução, os semáforos controlam a passagem – carros param na linha vermelha e só avançam quando permitido.
+
+Use Pausar e Reiniciar para controlar a simulação.
+
+As estatísticas são atualizadas a cada frame.
+
+📁 Estrutura de Pastas (principais)
+text
+src/
+├── app/                 # App Router (layout, páginas)
+├── components/          # Componentes React (SimulationCanvas, etc.)
+├── engine/              # Lógica principal da simulação
+│   ├── simulation.ts    # Classe Simulation (controle do sistema)
+│   ├── car.ts           # Classe Car (movimento, colisão, estado)
+│   ├── TrafficLight.ts  # Classe TrafficLight
+│   ├── constants.ts     # Configurações (dimensões, cores, posições)
+│   └── renderer.ts      # Desenho no canvas (estradas, carros, semáforos)
+├── hooks/               # useSimulation (gerencia loop e estado)
+└── public/              # favicon.svg e arquivos estáticos
+🤝 Contribuição
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull requests com melhorias, correções ou novas funcionalidades.
+
+Fork o projeto
+
+Crie sua branch (git checkout -b feature/minha-feature)
+
+Commit suas mudanças (git commit -m 'Adiciona nova feature')
+
+Push para a branch (git push origin feature/minha-feature)
+
+Abra um Pull Request
+
+📬 Contato
+Desenvolvido por Daniel Colonheze – GitHub
+
+Projeto inspirado no problema clássico de Jantar dos Filósofos aplicado a sistemas de tráfego.
