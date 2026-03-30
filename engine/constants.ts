@@ -48,7 +48,7 @@ export const LANE_CONFIG: Record<Direction, LaneConfig> = {
     dir:      1,               // positive Y = downward
     stopLine: CY - HALF - 2,
     laneX:    CX + HALF * 0.45,
-    semPos:   { x: CX + ROAD_W + 16, y: CY - HALF - 32 },
+    semPos:   { x: CX + HALF + 20, y: CY + HALF + 30 }, // lado sul, fora da pista
   },
   south: {
     entry:    { x: CX - HALF * 0.45, y: H + CAR_BODY_LEN },
@@ -56,7 +56,7 @@ export const LANE_CONFIG: Record<Direction, LaneConfig> = {
     dir:      -1,
     stopLine: CY + HALF + 2,
     laneX:    CX - HALF * 0.45,
-    semPos:   { x: CX - ROAD_W - 16, y: CY + HALF + 32 },
+    semPos:   { x: CX - HALF - 20, y: CY - HALF - 30 }, // lado norte, fora da pista
   },
   east: {
     entry:    { x: W + CAR_BODY_LEN, y: CY + HALF * 0.45 },
@@ -64,7 +64,7 @@ export const LANE_CONFIG: Record<Direction, LaneConfig> = {
     dir:      -1,
     stopLine: CX + HALF + 2,
     laneY:    CY + HALF * 0.45,
-    semPos:   { x: CX + HALF + 32, y: CY - ROAD_W - 16 },
+    semPos:   { x: CX - HALF - 30, y: CY + HALF + 30 }, // lado oeste, fora da pista
   },
   west: {
     entry:    { x: -CAR_BODY_LEN, y: CY - HALF * 0.45 },
@@ -72,6 +72,6 @@ export const LANE_CONFIG: Record<Direction, LaneConfig> = {
     dir:      1,
     stopLine: CX - HALF - 2,
     laneY:    CY - HALF * 0.45,
-    semPos:   { x: CX - HALF - 32, y: CY + ROAD_W + 16 },
+    semPos:   { x: CX + HALF + 30, y: CY - HALF - 30 }, // lado leste, fora da pista
   },
 };

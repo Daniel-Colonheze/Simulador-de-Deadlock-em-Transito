@@ -72,37 +72,84 @@ export function drawRoad(ctx: CanvasRenderingContext2D) {
   ctx.beginPath(); ctx.moveTo(CX - HALF, CY);        ctx.lineTo(CX-HALF, CY+ROAD_W);    ctx.stroke();
 }
 
-// ── traffic lights ────────────────────────────
-export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: number, state: string) {
-  const w = 18, h = 42, r = 4;
-  ctx.fillStyle = "#12192b";
-  ctx.strokeStyle = "#232a40";
-  ctx.lineWidth = 1;
-  roundRect(ctx, x - w / 2, y - h / 2, w, h, r);
-  ctx.fill(); ctx.stroke();
+// ── traffic lights (vertical for N/S, horizontal for E/W, with inverted red/green for E/W) ──
+export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: number, state: string, direction: Direction) {
+  const isVertical = direction === 'north' || direction === 'south';
 
-  const dots = [
-    { s: "red",    color: COLORS.semRed,    py: y - h / 2 + 8  },
-    { s: "yellow", color: COLORS.semYellow, py: y              },
-    { s: "green",  color: COLORS.semGreen,  py: y + h / 2 - 8  },
-  ];
-  dots.forEach(({ s, color, py }) => {
-    const active = state === s;
-    ctx.beginPath();
-    ctx.arc(x, py, 5, 0, Math.PI * 2);
-    if (active) {
-      ctx.fillStyle = color;
-      ctx.shadowColor = color;
-      ctx.shadowBlur = 12;
-    } else {
-      ctx.fillStyle = "#0a0e1a";
+  if (isVertical) {
+    // Vertical (north/south): 18x42, cores padrão (vermelho em cima)
+    const w = 18, h = 42, r = 4;
+    ctx.save();
+    ctx.fillStyle = "#12192b";
+    ctx.strokeStyle = "#232a40";
+    ctx.lineWidth = 1;
+    roundRect(ctx, x - w / 2, y - h / 2, w, h, r);
+    ctx.fill();
+    ctx.stroke();
+
+    const radius = 5;
+    const yOffsets = [-h/2 + 8, 0, h/2 - 8];
+    const colors = ['red', 'yellow', 'green'];
+
+    for (let i = 0; i < 3; i++) {
+      const colorName = colors[i];
+      const active = state === colorName;
+      const py = y + yOffsets[i];
+      ctx.beginPath();
+      ctx.arc(x, py, radius, 0, Math.PI * 2);
+      if (active) {
+        ctx.fillStyle = colorName === 'red' ? COLORS.semRed : (colorName === 'yellow' ? COLORS.semYellow : COLORS.semGreen);
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = 12;
+      } else {
+        ctx.fillStyle = "#0a0e1a";
+        ctx.shadowBlur = 0;
+      }
+      ctx.fill();
       ctx.shadowBlur = 0;
     }
+    ctx.restore();
+  } else {
+    // Horizontal (east/west): 42x18, com vermelho na ponta oposta à anterior
+    const w = 42, h = 18, r = 4;
+    ctx.save();
+    ctx.fillStyle = "#12192b";
+    ctx.strokeStyle = "#232a40";
+    ctx.lineWidth = 1;
+    roundRect(ctx, x - w / 2, y - h / 2, w, h, r);
     ctx.fill();
-    ctx.shadowBlur = 0;
-  });
-}
+    ctx.stroke();
 
+    const radius = 5;
+    const xOffsets = [-w/2 + 10, 0, w/2 - 10];
+    // Invertido: east -> vermelho à direita (green left), west -> vermelho à esquerda (green right)
+    let colors: ('red' | 'yellow' | 'green')[];
+    if (direction === 'east') {
+      colors = ['green', 'yellow', 'red']; // esquerda=verde, direita=vermelho
+    } else { // west
+      colors = ['red', 'yellow', 'green']; // esquerda=vermelho, direita=verde
+    }
+
+    for (let i = 0; i < 3; i++) {
+      const colorName = colors[i];
+      const active = state === colorName;
+      const px = x + xOffsets[i];
+      ctx.beginPath();
+      ctx.arc(px, y, radius, 0, Math.PI * 2);
+      if (active) {
+        ctx.fillStyle = colorName === 'red' ? COLORS.semRed : (colorName === 'yellow' ? COLORS.semYellow : COLORS.semGreen);
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = 12;
+      } else {
+        ctx.fillStyle = "#0a0e1a";
+        ctx.shadowBlur = 0;
+      }
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+    ctx.restore();
+  }
+}
 // ── car ───────────────────────────────────────
 export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolean) {
   const cfg = LANE_CONFIG[car.direction];
@@ -223,7 +270,7 @@ export function renderScene(ctx: CanvasRenderingContext2D, sim: Simulation, flas
     DIRECTIONS.forEach(d => {
       const cfg = LANE_CONFIG[d];
       const { x, y } = cfg.semPos;
-      drawTrafficLight(ctx, x, y, sim.lights[d].state);
+      drawTrafficLight(ctx, x, y, sim.lights[d].state, d);
     });
   }
 

@@ -178,18 +178,22 @@ export class Car {
     }
 
     // ── STOP AT RED / STOP LINE ──
-    const dist = this.distToStopLine();
-    const stopBuffer = this.speed + 2;
-    if (dist > 0 && dist < stopBuffer && !this.isPastStopLine() && !canEnterIntersection) {
-      // Para completamente antes da linha de parada (comprimento total do carro + margem de segurança)
-      const stopOffset = CAR_BODY_LEN + 12;
-      if (cfg.axis === "y") this.y = cfg.stopLine - cfg.dir * stopOffset;
-      else                   this.x = cfg.stopLine - cfg.dir * stopOffset;
-      this.state = "waiting";
-      this.waitTime++;
-      this.updateSmoke();
-      return;
+    if (!canEnterIntersection && !this.isPastStopLine()) {
+      const frontPos = this.distAlongAxis() + (cfg.dir * CAR_BODY_LEN / 2);
+      const distanceToLine = (cfg.stopLine - frontPos) * cfg.dir; // positivo se ainda não alcançou
+
+      if (distanceToLine <= this.speed) {
+        // Para exatamente na linha (frente do carro rente)
+        const newPos = cfg.stopLine - cfg.dir * (CAR_BODY_LEN / 2);
+        if (cfg.axis === "y") this.y = newPos;
+        else this.x = newPos;
+        this.state = "waiting";
+        this.waitTime++;
+        this.updateSmoke();
+        return; // não se move neste tick
+      }
     }
+
 
     // ── MOVE ──
     if (cfg.axis === "y") this.y += cfg.dir * this.speed;
