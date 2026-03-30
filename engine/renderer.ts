@@ -150,15 +150,15 @@ export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: nu
     ctx.restore();
   }
 }
+
 // ── car ───────────────────────────────────────
 export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolean) {
   const cfg = LANE_CONFIG[car.direction];
   const isV = cfg.axis === "y";
-  // Width along travel axis = CAR_BODY_LEN; across = CAR_BODY_WID
   const cLen = CAR_BODY_LEN;
   const cWid = CAR_BODY_WID;
-  const cw = isV ? cWid : cLen;  // canvas x extent
-  const ch = isV ? cLen : cWid;  // canvas y extent
+  const cw = isV ? cWid : cLen;
+  const ch = isV ? cLen : cWid;
 
   const broken  = car.state === "broken";
   const waiting = car.state === "waiting";
@@ -166,7 +166,6 @@ export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolea
   ctx.save();
   ctx.translate(car.x, car.y);
 
-  // Glow for broken
   if (broken) {
     ctx.shadowColor = COLORS.deadlockFlash;
     ctx.shadowBlur  = flashOn ? 24 : 10;
@@ -175,17 +174,14 @@ export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolea
     ctx.shadowBlur  = 6;
   }
 
-  // Body
   const bodyColor = broken ? COLORS.broken : car.color;
   ctx.fillStyle = bodyColor;
   ctx.globalAlpha = broken ? 0.9 : 1;
   roundRect(ctx, -cw / 2, -ch / 2, cw, ch, 5);
   ctx.fill();
 
-  // Windshield
   ctx.fillStyle = broken ? "rgba(80,30,30,0.6)" : "rgba(0,0,0,0.45)";
   if (isV) {
-    // Invertido: dir=1 (north, descendo) para-brisa embaixo; dir=-1 (south, subindo) para-brisa em cima
     const frontY = cfg.dir === 1 ? ch / 2 - 11 : -ch / 2 + 4;
     ctx.fillRect(-cw / 2 + 3, frontY, cw - 6, 7);
   } else {
@@ -193,12 +189,10 @@ export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolea
     ctx.fillRect(frontX, -ch / 2 + 3, 7, ch - 6);
   }
 
-  // Headlights / taillights
   const hlColor = broken ? "#FF4560" : "#ffffffcc";
   const tlColor = "rgba(255,80,80,0.7)";
   ctx.fillStyle = hlColor;
   if (isV) {
-    // Invertido: dir=1 (north, descendo) faróis embaixo; dir=-1 (south, subindo) faróis em cima
     const frontY = cfg.dir === 1 ? ch / 2 - 3 : -ch / 2 + 3;
     const rearY  = cfg.dir === 1 ? -ch / 2 + 3  : ch / 2 - 3;
     [frontY].forEach(hy => {
@@ -220,7 +214,6 @@ export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolea
     ctx.beginPath(); ctx.arc(rearX,  ch/2-4, 2, 0, Math.PI*2); ctx.fill();
   }
 
-  // X mark on broken car
   if (broken) {
     ctx.strokeStyle = "rgba(255,255,255,0.7)";
     ctx.lineWidth   = 2;
@@ -255,17 +248,18 @@ export function drawDeadlockHighlight(ctx: CanvasRenderingContext2D, on: boolean
   ctx.stroke();
 }
 
-// ── full scene ────────────────────────────────
-export function renderScene(ctx: CanvasRenderingContext2D, sim: Simulation, flashOn: boolean) {
+// ── full scene (com suporte a escala) ─────────
+export function renderScene(ctx: CanvasRenderingContext2D, sim: Simulation, flashOn: boolean, scale: number = 1) {
+  ctx.save();
+  ctx.scale(scale, scale);
+
   ctx.clearRect(0, 0, W, H);
   drawRoad(ctx);
 
   if (sim.deadlocked) drawDeadlockHighlight(ctx, flashOn);
 
-  // Smoke (below cars)
   sim.cars.forEach(car => drawSmoke(ctx, car));
 
-  // Traffic lights (solution mode)
   if (sim.mode === "solution") {
     DIRECTIONS.forEach(d => {
       const cfg = LANE_CONFIG[d];
@@ -274,8 +268,9 @@ export function renderScene(ctx: CanvasRenderingContext2D, sim: Simulation, flas
     });
   }
 
-  // Cars
   sim.cars.forEach(car => {
     if (car.state !== "done") drawCar(ctx, car, flashOn);
   });
+
+  ctx.restore();
 }

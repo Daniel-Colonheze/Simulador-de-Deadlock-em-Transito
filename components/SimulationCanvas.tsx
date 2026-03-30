@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Play, Pause, RotateCcw } from "lucide-react";
 import { useSimulation } from "@/hooks/useSimulation";
@@ -15,7 +15,25 @@ interface SimulationCanvasProps {
 
 export function SimulationCanvas({ mode, title, description }: SimulationCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { running, stats, toggleRun, reset } = useSimulation(mode, canvasRef);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  const { running, stats, toggleRun, reset } = useSimulation(mode, canvasRef, scale);
+
+  useEffect(() => {
+    const updateSize = () => {
+      if (!containerRef.current || !canvasRef.current) return;
+      const containerWidth = containerRef.current.clientWidth;
+      const size = Math.min(containerWidth, window.innerHeight * 0.7);
+      const newScale = size / W;
+      setScale(newScale);
+      canvasRef.current.width = W * newScale;
+      canvasRef.current.height = H * newScale;
+    };
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
 
   return (
     <motion.div
@@ -24,7 +42,6 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
       transition={{ duration: 0.5 }}
       className="bg-card rounded-xl border border-border overflow-hidden shadow-xl"
     >
-      {/* Header */}
       <div className="p-6 border-b border-border bg-secondary/50">
         <div className="flex items-center justify-between">
           <div>
@@ -40,17 +57,7 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
                   : "bg-accent-south/20 text-accent-south hover:bg-accent-south/30"
               }`}
             >
-              {running ? (
-                <>
-                  <Pause className="w-4 h-4" />
-                  <span>Pausar</span>
-                </>
-              ) : (
-                <>
-                  <Play className="w-4 h-4" />
-                  <span>Iniciar</span>
-                </>
-              )}
+              {running ? <><Pause className="w-4 h-4" /><span>Pausar</span></> : <><Play className="w-4 h-4" /><span>Iniciar</span></>}
             </button>
             <button
               onClick={reset}
@@ -63,18 +70,9 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
         </div>
       </div>
 
-      {/* Canvas Container */}
       <div className="p-6 bg-background flex justify-center">
-        <div className="relative rounded-lg overflow-hidden shadow-2xl border border-border">
-          <canvas
-            ref={canvasRef}
-            width={W}
-            height={H}
-            className="block"
-            style={{ maxWidth: "100%", height: "auto" }}
-          />
-
-          {/* Deadlock Alert */}
+        <div ref={containerRef} className="relative rounded-lg overflow-hidden shadow-2xl border border-border w-full max-w-[620px]">
+          <canvas ref={canvasRef} className="block w-full h-auto" style={{ aspectRatio: "1 / 1" }} />
           {stats.deadlocked && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -82,31 +80,20 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
               className="absolute inset-0 flex items-center justify-center bg-accent-north/20 backdrop-blur-sm"
             >
               <motion.div
-                animate={{
-                  boxShadow: [
-                    "0 0 20px rgba(255, 69, 96, 0.3)",
-                    "0 0 40px rgba(255, 69, 96, 0.6)",
-                    "0 0 20px rgba(255, 69, 96, 0.3)",
-                  ],
-                }}
+                animate={{ boxShadow: ["0 0 20px rgba(255,69,96,0.3)", "0 0 40px rgba(255,69,96,0.6)", "0 0 20px rgba(255,69,96,0.3)"] }}
                 transition={{ duration: 1, repeat: Infinity }}
                 className="bg-card border-2 border-accent-north rounded-xl px-8 py-6 text-center"
               >
-                <h4 className="text-2xl font-bold text-accent-north mb-2">
-                  DEADLOCK DETECTADO!
-                </h4>
-                <p className="text-foreground/80">
-                  Todos os carros estão bloqueados uns pelos outros
-                </p>
+                <h4 className="text-2xl font-bold text-accent-north mb-2">DEADLOCK DETECTADO!</h4>
+                <p className="text-foreground/80">Todos os carros estão bloqueados uns pelos outros</p>
               </motion.div>
             </motion.div>
           )}
         </div>
       </div>
 
-      {/* Stats */}
       <div className="px-6 py-4 border-t border-border bg-secondary/30">
-        <div className="grid grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <StatCard label="Carros Completados" value={stats.completed} color="text-accent-south" />
           <StatCard label="Aguardando" value={stats.waiting} color="text-accent-west" />
           <StatCard label="Em Colisão" value={stats.broken} color="text-accent-north" />
