@@ -14,7 +14,6 @@
   1. O semáforo da direção está verde? (lock disponível)  
   2. Não há carro de direção perpendicular já dentro do cruzamento?  
 
-```typescript
 private _canEnter(car: Car): boolean {
   if (this.mode === "deadlock") return true;
   const acquired = this.lights[car.direction].acquire();
@@ -139,7 +138,7 @@ markdown
   1. Is the traffic light green for that direction? (lock available)
   2. Is there no perpendicular direction car already inside the intersection?
 
-```typescript
+
 private _canEnter(car: Car): boolean {
   if (this.mode === "deadlock") return true;
   const acquired = this.lights[car.direction].acquire();
@@ -236,4 +235,3 @@ Solution mode: never deadlocks; cars respect lights and passing order.
 Deadlock mode: collisions occur and eventually the system freezes (deadlock detected).
 
 The web interface shows real‑time statistics; the standalone script simulacao.js reproduces the same logic in the terminal.
-
