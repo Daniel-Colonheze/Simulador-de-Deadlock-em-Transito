@@ -6,6 +6,7 @@ import { Play, Pause, RotateCcw } from "lucide-react";
 import { useSimulation } from "@/hooks/useSimulation";
 import { SimulationMode } from "@/engine/simulation";
 import { W, H } from "@/engine/constants";
+import { TrafficCone } from 'lucide-react';
 
 interface SimulationCanvasProps {
   mode: SimulationMode;
@@ -47,6 +48,7 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
       <div className="p-4 sm:p-6 border-b border-border bg-secondary/50">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
+            <TrafficCone className="w-6 h-6 text-accent-north" />
             <h3 className="text-lg sm:text-xl font-semibold text-foreground">{title}</h3>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">{description}</p>
           </div>
