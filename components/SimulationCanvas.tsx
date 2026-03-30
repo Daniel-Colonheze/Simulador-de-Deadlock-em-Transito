@@ -24,6 +24,7 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
     const updateSize = () => {
       if (!containerRef.current || !canvasRef.current) return;
       const containerWidth = containerRef.current.clientWidth;
+      // Limita o tamanho máximo para não ficar enorme em desktop
       const maxSize = Math.min(containerWidth, 600);
       const newScale = maxSize / W;
       setScale(newScale);
@@ -46,11 +47,7 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
       <div className="p-4 sm:p-6 border-b border-border bg-secondary/50">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            {/* Ícone ao lado do título */}
-            <div className="flex items-center gap-2">
-              <TrafficCone className="w-5 h-5 sm:w-6 sm:h-6 text-accent-north" />
-              <h3 className="text-lg sm:text-xl font-semibold text-foreground">{title}</h3>
-            </div>
+            <h3 className="text-lg sm:text-xl font-semibold text-foreground">{title}</h3>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">{description}</p>
           </div>
           <div className="flex items-center gap-2">
