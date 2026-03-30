@@ -55,7 +55,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border mt-8 pt-6 text-center text-sm text-muted-foreground">
-          <p className="mt-1">Feito por Daniel Colonheze • Todos os direitos reservados ©</p>
+          <p className="mt-1">Feito por Daniel Colonheze 2026 • Todos os direitos reservados ©</p>
         </div>
       </div>
     </motion.footer>
