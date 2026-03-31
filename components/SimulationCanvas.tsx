@@ -110,7 +110,9 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
                 <h4 className="text-lg sm:text-2xl font-bold text-accent-north mb-1 sm:mb-2">
                   {t("deadlock.alert")}
                 </h4>
-                <p className="text-xs sm:text-sm text-foreground/80">{t("deadlock.message")}</p>
+                <p className="text-xs sm:text-sm text-white">
+                  {t("deadlock.message")}
+                </p>
               </motion.div>
             </motion.div>
           )}

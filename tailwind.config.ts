@@ -1,70 +1,32 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: "class",
   theme: {
     extend: {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)",
-        },
-        secondary: {
-          DEFAULT: "var(--secondary)",
-          foreground: "var(--secondary-foreground)",
-        },
-        accent: {
-          north: "var(--accent-north)",
-          south: "var(--accent-south)",
-          east: "var(--accent-east)",
-          west: "var(--accent-west)",
-        },
-        muted: {
-          DEFAULT: "var(--muted)",
-          foreground: "var(--muted-foreground)",
-        },
-        card: {
-          DEFAULT: "var(--card)",
-          foreground: "var(--card-foreground)",
-        },
+        primary: "var(--primary)",
+        "primary-foreground": "var(--primary-foreground)",
+        secondary: "var(--secondary)",
+        "secondary-foreground": "var(--secondary-foreground)",
+        card: "var(--card)",
+        "card-foreground": "var(--card-foreground)",
+        muted: "var(--muted)",
+        "muted-foreground": "var(--muted-foreground)",
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
-        traffic: {
-          red: "var(--traffic-red)",
-          yellow: "var(--traffic-yellow)",
-          green: "var(--traffic-green)",
-        },
-        road: {
-          surface: "var(--road-surface)",
-          line: "var(--road-line)",
-        },
-      },
-      animation: {
-        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "glow": "glow 2s ease-in-out infinite alternate",
-      },
-      keyframes: {
-        glow: {
-          "0%": { boxShadow: "0 0 5px rgba(199, 91, 57, 0.3)" },
-          "100%": { boxShadow: "0 0 20px rgba(199, 91, 57, 0.6)" },
-        },
-      },
-      boxShadow: {
-        sm: "var(--shadow-sm)",
-        DEFAULT: "var(--shadow)",
-        lg: "var(--shadow-lg)",
+        "accent-north": "var(--accent-north)",
+        "accent-south": "var(--accent-south)",
+        "accent-east": "var(--accent-east)",
+        "accent-west": "var(--accent-west)",
       },
     },
   },
   plugins: [],
 };
-
-export default config;

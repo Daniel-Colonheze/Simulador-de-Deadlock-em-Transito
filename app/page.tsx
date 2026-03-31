@@ -20,12 +20,12 @@ import { useLocale } from "@/contexts/LocaleContext";
 export default function Home() {
   const { t, locale } = useLocale();
 
-  // Parse conditions list based on locale
   const conditionsText = t("concept.conditions.items");
   const conditionsList = conditionsText.split("\n");
 
   return (
-    <div className="min-h-screen bg-background">
+    // Removido bg-background para não cobrir o canvas de partículas
+    <div className="min-h-screen">
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

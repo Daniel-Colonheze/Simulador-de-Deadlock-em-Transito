@@ -4,6 +4,7 @@ import { LocaleProvider } from "@/contexts/LocaleContext";
 import type { Locale } from "@/i18n/translations";
 import "./globals.css";
 import { AppProviders } from "@/providers/AppProviders";
+import { StarsBackground } from "@/components/StarsBackground";
 
 export const metadata: Metadata = {
   title: "Deadlock Traffic Simulator",
@@ -20,19 +21,18 @@ export default function RootLayout({
   const localeCookie = cookieStore.get("locale")?.value;
   const initialLocale: Locale = localeCookie === "en" ? "en" : "pt";
 
-  const themeCookie = cookieStore.get("theme")?.value;
-  const initialTheme: "light" | "dark" =
-    themeCookie === "light" || themeCookie === "dark" ? themeCookie : "light";
-
   return (
     <html lang={initialLocale === "pt" ? "pt-BR" : "en"} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </head>
-      <body className="antialiased min-h-screen bg-background" suppressHydrationWarning>
-        <LocaleProvider initialLocale={initialLocale}>
-          <AppProviders initialTheme={initialTheme}>{children}</AppProviders>
-        </LocaleProvider>
+      <body className="antialiased min-h-screen" suppressHydrationWarning>
+        <StarsBackground />
+        <div className="relative z-10">
+          <LocaleProvider initialLocale={initialLocale}>
+            <AppProviders>{children}</AppProviders>
+          </LocaleProvider>
+        </div>
       </body>
     </html>
   );

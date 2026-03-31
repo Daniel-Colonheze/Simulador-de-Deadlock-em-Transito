@@ -3,88 +3,60 @@
 @tailwind utilities;
 
 /* ============================================
-   THEME VARIABLES - MODERN NEUTRAL PALETTE
+   THEME VARIABLES - ALTO CONTRASTE NO LIGHT MODE
    ============================================ */
 
 :root {
-  /* Light Mode - Tons neutros com azul suave */
-  --background: #f9fafb;
-  --foreground: #111827;
-
+  --background: #f8fafc;
+  --foreground: #030712;
   --primary: #2563eb;
   --primary-foreground: #ffffff;
-
-  --secondary: #f3f4f6;
-  --secondary-foreground: #1f2937;
-
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
   --card: #ffffff;
-  --card-foreground: #111827;
-
-  --muted: #f3f4f6;
-  --muted-foreground: #6b7280;
-
-  --border: #e5e7eb;
-  --input: #e5e7eb;
+  --card-foreground: #030712;
+  --muted: #e2e8f0;
+  --muted-foreground: #334155;
+  --border: #94a3b8;
+  --input: #cbd5e1;
   --ring: #2563eb;
-
-  /* Accent colors - modern */
   --accent-north: #3b82f6;
   --accent-south: #10b981;
   --accent-east: #f59e0b;
   --accent-west: #ef4444;
-
-  /* Traffic light colors (mantidos vibrantes) */
   --traffic-red: #ef4444;
   --traffic-yellow: #f59e0b;
   --traffic-green: #10b981;
-
-  /* Road colors (usados apenas no modo light, mas serão substituídos na simulação) */
   --road-surface: #4b5563;
   --road-line: #9ca3af;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
 }
 
 .dark {
-  /* Dark Mode - Tons escuros com azul profundo */
   --background: #111827;
   --foreground: #f9fafb;
-
   --primary: #3b82f6;
   --primary-foreground: #ffffff;
-
   --secondary: #1f2937;
   --secondary-foreground: #f3f4f6;
-
   --card: #1f2937;
   --card-foreground: #f9fafb;
-
   --muted: #374151;
   --muted-foreground: #9ca3af;
-
   --border: #374151;
   --input: #374151;
   --ring: #3b82f6;
-
-  /* Accent colors - mais suaves no dark */
   --accent-north: #60a5fa;
   --accent-south: #34d399;
   --accent-east: #fbbf24;
   --accent-west: #f87171;
-
-  /* Traffic light colors - vibrantes */
   --traffic-red: #f87171;
   --traffic-yellow: #fbbf24;
   --traffic-green: #34d399;
-
-  /* Road colors (usados apenas no modo dark) */
   --road-surface: #4b5563;
   --road-line: #9ca3af;
-
-  /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
@@ -94,13 +66,12 @@
   * {
     @apply border-border;
   }
-
   html {
     scroll-behavior: smooth;
   }
-
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply text-foreground antialiased;
+    background-color: var(--background); /* <--- CORREÇÃO: agora o body tem fundo */
     font-feature-settings: "rlig" 1, "calt" 1;
     transition: background-color 0.3s ease, color 0.3s ease;
   }
@@ -111,44 +82,24 @@
     @apply bg-clip-text text-transparent;
     background-image: linear-gradient(135deg, var(--primary) 0%, #60a5fa 100%);
   }
-
   .dark .text-gradient {
     background-image: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
   }
 }
 
-/* ============================================
-   ÁREA DE DESENHO DA SIMULAÇÃO
-   Cores consistentes e com bom contraste
-   ============================================ */
+/* Área da simulação (mantém cores escuras) */
 .simulation-drawing-area {
-  /* Fundo do canvas (área externa à rua) */
   --background: #1f2937;
-
-  /* Superfície da rua */
   --road-surface: #374151;
   --road-line: #e5e7eb;
-
-  /* Bordas e grid */
   --border: #4b5563;
-
-  /* Cores dos semáforos – vibrantes */
   --traffic-red: #f87171;
   --traffic-yellow: #fbbf24;
   --traffic-green: #34d399;
-
-  /* Cores dos carros:
-     Norte = vermelho (para deadlock e quebrados)
-     Sul   = verde
-     Leste = amarelo
-     Oeste = laranja/vermelho claro
-  */
-  --accent-north: #f87171;   /* vermelho – usado para deadlock e carros quebrados */
-  --accent-south: #34d399;   /* verde */
-  --accent-east: #fbbf24;    /* amarelo */
-  --accent-west: #f97316;    /* laranja */
-
-  /* Cores do card interno (se necessário) */
+  --accent-north: #f87171;
+  --accent-south: #34d399;
+  --accent-east: #fbbf24;
+  --accent-west: #f97316;
   --card: #1f2937;
   --foreground: #f9fafb;
   --secondary: #374151;
