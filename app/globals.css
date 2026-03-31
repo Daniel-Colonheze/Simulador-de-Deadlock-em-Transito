@@ -2,18 +2,117 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   THEME VARIABLES - NATURAL COLOR PALETTE
+   ============================================ */
+
+:root {
+  /* Light Mode - Cores naturais e terrosas */
+  --background: #faf8f5;
+  --foreground: #2d2a26;
+
+  --primary: #c75b39;
+  --primary-foreground: #ffffff;
+
+  --secondary: #f5f0eb;
+  --secondary-foreground: #4a4540;
+
+  --card: #ffffff;
+  --card-foreground: #2d2a26;
+
+  --muted: #e8e4df;
+  --muted-foreground: #6b6560;
+
+  --border: #d4cec7;
+  --input: #d4cec7;
+  --ring: #c75b39;
+
+  /* Accent colors - naturais */
+  --accent-north: #c94a4a;
+  --accent-south: #4a9c6d;
+  --accent-east: #3d7aa8;
+  --accent-west: #c9913d;
+
+  /* Traffic light colors */
+  --traffic-red: #d94646;
+  --traffic-yellow: #e6b84d;
+  --traffic-green: #4da866;
+
+  /* Road colors */
+  --road-surface: #4a525a;
+  --road-line: #e8e4df;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(45, 42, 38, 0.05);
+  --shadow: 0 4px 6px -1px rgba(45, 42, 38, 0.1), 0 2px 4px -2px rgba(45, 42, 38, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(45, 42, 38, 0.1), 0 4px 6px -4px rgba(45, 42, 38, 0.1);
+}
+
+.dark {
+  /* Dark Mode - Cores profundas e sóbrias */
+  --background: #1c1a18;
+  --foreground: #f0ebe5;
+
+  --primary: #d4856a;
+  --primary-foreground: #1c1a18;
+
+  --secondary: #2d2a26;
+  --secondary-foreground: #d8d3cc;
+
+  --card: #252320;
+  --card-foreground: #f0ebe5;
+
+  --muted: #3a3632;
+  --muted-foreground: #9a948c;
+
+  --border: #403c38;
+  --input: #403c38;
+  --ring: #d4856a;
+
+  /* Accent colors - tons mais suaves no dark */
+  --accent-north: #e57373;
+  --accent-south: #81c995;
+  --accent-east: #7db9d8;
+  --accent-west: #e6b566;
+
+  /* Traffic light colors - mantidos vibrantes */
+  --traffic-red: #ff5a5a;
+  --traffic-yellow: #ffd166;
+  --traffic-green: #6ccf8a;
+
+  /* Road colors */
+  --road-surface: #3a4046;
+  --road-line: #5a6066;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+}
+
 @layer base {
   * {
     @apply border-border;
   }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 }
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-emerald-400;
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, var(--primary) 0%, #8b5a2b 100%);
+  }
+
+  .dark .text-gradient {
+    background-image: linear-gradient(135deg, #d4856a 0%, #e6b566 100%);
   }
 }

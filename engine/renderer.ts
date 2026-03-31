@@ -7,6 +7,31 @@ import type { Simulation } from "./simulation";
 import type { Car } from "./car";
 import type { Direction } from "./constants";
 
+// Helper to get CSS variable value
+function getCSSVariable(name: string, fallback: string): string {
+  if (typeof window === "undefined") return fallback;
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return value || fallback;
+}
+
+// Get theme-aware colors
+function getThemeColors() {
+  return {
+    road: getCSSVariable("--road-surface", "#4a525a"),
+    roadLine: getCSSVariable("--road-line", "#5a6066"),
+    background: getCSSVariable("--background", "#1c1a18"),
+    border: getCSSVariable("--border", "#403c38"),
+    accentNorth: getCSSVariable("--accent-north", "#c94a4a"),
+    accentEast: getCSSVariable("--accent-east", "#3d7aa8"),
+    accentSouth: getCSSVariable("--accent-south", "#4a9c6d"),
+    accentWest: getCSSVariable("--accent-west", "#c9913d"),
+    trafficRed: getCSSVariable("--traffic-red", "#d94646"),
+    trafficYellow: getCSSVariable("--traffic-yellow", "#e6b84d"),
+    trafficGreen: getCSSVariable("--traffic-green", "#4da866"),
+    card: getCSSVariable("--card", "#252320"),
+  };
+}
+
 // ── helpers ──────────────────────────────────
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   r = Math.min(r, w / 2, h / 2);
@@ -25,12 +50,14 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
 
 // ── road ─────────────────────────────────────
 export function drawRoad(ctx: CanvasRenderingContext2D) {
+  const colors = getThemeColors();
+
   // Background
-  ctx.fillStyle = COLORS.grass;
+  ctx.fillStyle = colors.background;
   ctx.fillRect(0, 0, W, H);
 
   // Subtle grid
-  ctx.strokeStyle = COLORS.gridLine;
+  ctx.strokeStyle = colors.border + "40"; // 25% opacity
   ctx.lineWidth = 1;
   for (let i = 0; i < W; i += 38) {
     ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, H); ctx.stroke();
@@ -38,13 +65,13 @@ export function drawRoad(ctx: CanvasRenderingContext2D) {
   }
 
   // Road surfaces
-  ctx.fillStyle = COLORS.road;
+  ctx.fillStyle = colors.road;
   ctx.fillRect(CX - HALF, 0, ROAD_W, H);         // vertical
   ctx.fillRect(0, CY - HALF, W, ROAD_W);          // horizontal
 
   // Lane dividers (dashed)
   ctx.setLineDash([16, 14]);
-  ctx.strokeStyle = COLORS.roadLine;
+  ctx.strokeStyle = colors.roadLine;
   ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(CX, 0);       ctx.lineTo(CX, CY - HALF); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(CX, CY+HALF); ctx.lineTo(CX, H);         ctx.stroke();
@@ -54,7 +81,7 @@ export function drawRoad(ctx: CanvasRenderingContext2D) {
 
   // Zebra crossings (subtle)
   const stripeW = 8, stripeGap = 6, stripes = 4;
-  ctx.fillStyle = "rgba(255,255,255,0.04)";
+  ctx.fillStyle = colors.roadLine + "15"; // very subtle
   for (let i = 0; i < stripes; i++) {
     const off = i * (stripeW + stripeGap);
     ctx.fillRect(CX - HALF, CY - HALF - 28 - off, ROAD_W, stripeW);
@@ -64,7 +91,7 @@ export function drawRoad(ctx: CanvasRenderingContext2D) {
   }
 
   // Stop lines
-  ctx.strokeStyle = "rgba(255,255,255,0.25)";
+  ctx.strokeStyle = colors.roadLine + "60";
   ctx.lineWidth = 3;
   ctx.beginPath(); ctx.moveTo(CX, CY - HALF);       ctx.lineTo(CX + ROAD_W, CY - HALF); ctx.stroke();
   ctx.beginPath(); ctx.moveTo(CX - ROAD_W, CY+HALF); ctx.lineTo(CX, CY + HALF);         ctx.stroke();
@@ -74,14 +101,15 @@ export function drawRoad(ctx: CanvasRenderingContext2D) {
 
 // ── traffic lights (vertical for N/S, horizontal for E/W, with inverted red/green for E/W) ──
 export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: number, state: string, direction: Direction) {
+  const colors = getThemeColors();
   const isVertical = direction === 'north' || direction === 'south';
 
   if (isVertical) {
     // Vertical (north/south): 18x42, cores padrão (vermelho em cima)
     const w = 18, h = 42, r = 4;
     ctx.save();
-    ctx.fillStyle = "#12192b";
-    ctx.strokeStyle = "#232a40";
+    ctx.fillStyle = colors.card;
+    ctx.strokeStyle = colors.border;
     ctx.lineWidth = 1;
     roundRect(ctx, x - w / 2, y - h / 2, w, h, r);
     ctx.fill();
@@ -89,20 +117,20 @@ export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: nu
 
     const radius = 5;
     const yOffsets = [-h/2 + 8, 0, h/2 - 8];
-    const colors = ['red', 'yellow', 'green'];
+    const lightColors = [colors.trafficRed, colors.trafficYellow, colors.trafficGreen];
 
     for (let i = 0; i < 3; i++) {
-      const colorName = colors[i];
+      const colorName = ['red', 'yellow', 'green'][i];
       const active = state === colorName;
       const py = y + yOffsets[i];
       ctx.beginPath();
       ctx.arc(x, py, radius, 0, Math.PI * 2);
       if (active) {
-        ctx.fillStyle = colorName === 'red' ? COLORS.semRed : (colorName === 'yellow' ? COLORS.semYellow : COLORS.semGreen);
-        ctx.shadowColor = ctx.fillStyle;
+        ctx.fillStyle = lightColors[i];
+        ctx.shadowColor = lightColors[i];
         ctx.shadowBlur = 12;
       } else {
-        ctx.fillStyle = "#0a0e1a";
+        ctx.fillStyle = colors.background;
         ctx.shadowBlur = 0;
       }
       ctx.fill();
@@ -113,8 +141,8 @@ export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: nu
     // Horizontal (east/west): 42x18, com vermelho na ponta oposta à anterior
     const w = 42, h = 18, r = 4;
     ctx.save();
-    ctx.fillStyle = "#12192b";
-    ctx.strokeStyle = "#232a40";
+    ctx.fillStyle = colors.card;
+    ctx.strokeStyle = colors.border;
     ctx.lineWidth = 1;
     roundRect(ctx, x - w / 2, y - h / 2, w, h, r);
     ctx.fill();
@@ -123,25 +151,25 @@ export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: nu
     const radius = 5;
     const xOffsets = [-w/2 + 10, 0, w/2 - 10];
     // Invertido: east -> vermelho à direita (green left), west -> vermelho à esquerda (green right)
-    let colors: ('red' | 'yellow' | 'green')[];
+    let lightColors: string[];
     if (direction === 'east') {
-      colors = ['green', 'yellow', 'red']; // esquerda=verde, direita=vermelho
+      lightColors = [colors.trafficGreen, colors.trafficYellow, colors.trafficRed]; // esquerda=verde, direita=vermelho
     } else { // west
-      colors = ['red', 'yellow', 'green']; // esquerda=vermelho, direita=verde
+      lightColors = [colors.trafficRed, colors.trafficYellow, colors.trafficGreen]; // esquerda=vermelho, direita=verde
     }
 
     for (let i = 0; i < 3; i++) {
-      const colorName = colors[i];
+      const colorName = direction === 'east' ? ['green', 'yellow', 'red'][i] : ['red', 'yellow', 'green'][i];
       const active = state === colorName;
       const px = x + xOffsets[i];
       ctx.beginPath();
       ctx.arc(px, y, radius, 0, Math.PI * 2);
       if (active) {
-        ctx.fillStyle = colorName === 'red' ? COLORS.semRed : (colorName === 'yellow' ? COLORS.semYellow : COLORS.semGreen);
-        ctx.shadowColor = ctx.fillStyle;
+        ctx.fillStyle = lightColors[i];
+        ctx.shadowColor = lightColors[i];
         ctx.shadowBlur = 12;
       } else {
-        ctx.fillStyle = "#0a0e1a";
+        ctx.fillStyle = colors.background;
         ctx.shadowBlur = 0;
       }
       ctx.fill();
@@ -153,6 +181,7 @@ export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: nu
 
 // ── car ───────────────────────────────────────
 export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolean) {
+  const colors = getThemeColors();
   const cfg = LANE_CONFIG[car.direction];
   const isV = cfg.axis === "y";
   const cLen = CAR_BODY_LEN;
@@ -163,24 +192,33 @@ export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolea
   const broken  = car.state === "broken";
   const waiting = car.state === "waiting";
 
+  // Get direction color
+  const dirColors: Record<string, string> = {
+    north: colors.accentNorth,
+    south: colors.accentSouth,
+    east: colors.accentEast,
+    west: colors.accentWest,
+  };
+
   ctx.save();
   ctx.translate(car.x, car.y);
 
   if (broken) {
-    ctx.shadowColor = COLORS.deadlockFlash;
+    ctx.shadowColor = colors.accentNorth;
     ctx.shadowBlur  = flashOn ? 24 : 10;
   } else if (waiting) {
-    ctx.shadowColor = COLORS.west;
+    ctx.shadowColor = colors.accentWest;
     ctx.shadowBlur  = 6;
   }
 
-  const bodyColor = broken ? COLORS.broken : car.color;
+  const bodyColor = broken ? colors.accentNorth + "80" : dirColors[car.direction];
   ctx.fillStyle = bodyColor;
   ctx.globalAlpha = broken ? 0.9 : 1;
   roundRect(ctx, -cw / 2, -ch / 2, cw, ch, 5);
   ctx.fill();
 
-  ctx.fillStyle = broken ? "rgba(80,30,30,0.6)" : "rgba(0,0,0,0.45)";
+  // Windows
+  ctx.fillStyle = broken ? "rgba(60,40,40,0.6)" : "rgba(0,0,0,0.45)";
   if (isV) {
     const frontY = cfg.dir === 1 ? ch / 2 - 11 : -ch / 2 + 4;
     ctx.fillRect(-cw / 2 + 3, frontY, cw - 6, 7);
@@ -189,8 +227,9 @@ export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolea
     ctx.fillRect(frontX, -ch / 2 + 3, 7, ch - 6);
   }
 
-  const hlColor = broken ? "#FF4560" : "#ffffffcc";
-  const tlColor = "rgba(255,80,80,0.7)";
+  // Lights
+  const hlColor = broken ? colors.accentNorth : "#ffffffcc";
+  const tlColor = "rgba(255,100,80,0.7)";
   ctx.fillStyle = hlColor;
   if (isV) {
     const frontY = cfg.dir === 1 ? ch / 2 - 3 : -ch / 2 + 3;
@@ -214,6 +253,7 @@ export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolea
     ctx.beginPath(); ctx.arc(rearX,  ch/2-4, 2, 0, Math.PI*2); ctx.fill();
   }
 
+  // X for broken cars
   if (broken) {
     ctx.strokeStyle = "rgba(255,255,255,0.7)";
     ctx.lineWidth   = 2;
@@ -233,15 +273,16 @@ export function drawSmoke(ctx: CanvasRenderingContext2D, car: Car) {
   car.smokeParticles.forEach(p => {
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(180,140,100,${p.life * 0.45})`;
+    ctx.fillStyle = `rgba(160,150,140,${p.life * 0.4})`;
     ctx.fill();
   });
 }
 
 // ── intersection deadlock highlight ──────────
 export function drawDeadlockHighlight(ctx: CanvasRenderingContext2D, on: boolean) {
-  ctx.fillStyle   = on ? "rgba(255,69,96,0.15)" : "rgba(255,69,96,0.06)";
-  ctx.strokeStyle = on ? "rgba(255,69,96,0.8)"  : "rgba(255,69,96,0.2)";
+  const colors = getThemeColors();
+  ctx.fillStyle   = on ? colors.accentNorth + "25" : colors.accentNorth + "10";
+  ctx.strokeStyle = on ? colors.accentNorth : colors.accentNorth + "50";
   ctx.lineWidth   = 2;
   roundRect(ctx, CX - HALF, CY - HALF, ROAD_W, ROAD_W, 4);
   ctx.fill();

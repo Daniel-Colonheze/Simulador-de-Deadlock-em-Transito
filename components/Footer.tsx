@@ -2,8 +2,11 @@
 
 import { motion } from "framer-motion";
 import { Github, BookOpen, Code } from "lucide-react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export function Footer() {
+  const { t, locale } = useLocale();
+
   return (
     <motion.footer
       initial={{ opacity: 0 }}
@@ -17,12 +20,12 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
               <BookOpen className="w-4 h-4" />
-              Sobre o Projeto
+              {locale === "pt" ? "Sobre o Projeto" : "About the Project"}
             </h4>
             <p className="text-sm text-muted-foreground">
-              Simulação interativa do problema clássico de deadlock em sistemas
-              concorrentes, demonstrando como múltiplos processos podem entrar
-              em estado de espera circular.
+              {locale === "pt"
+                ? "Simulação interativa do problema clássico de deadlock em sistemas concorrentes, demonstrando como múltiplos processos podem entrar em estado de espera circular."
+                : "Interactive simulation of the classic deadlock problem in concurrent systems, demonstrating how multiple processes can enter a circular wait state."}
             </p>
           </div>
 
@@ -30,7 +33,7 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
               <Code className="w-4 h-4" />
-              Tecnologias
+              {locale === "pt" ? "Tecnologias" : "Technologies"}
             </h4>
             <ul className="text-sm text-muted-foreground space-y-1">
               <li>React + TypeScript</li>
@@ -45,17 +48,20 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
               <Github className="w-4 h-4" />
-              Referências
+              {locale === "pt" ? "Referências" : "References"}
             </h4>
             <p className="text-sm text-muted-foreground">
-              Baseado no problema clássico dos Filósofos Jantantes e conceitos
-              de Sistemas Operacionais.
+              {t("footer.inspired")}
             </p>
           </div>
         </div>
 
         <div className="border-t border-border mt-8 pt-6 text-center text-sm text-muted-foreground">
-          <p className="mt-1">Feito por Daniel Colonheze 2026 • Todos os direitos reservados ©</p>
+          <p className="mt-1">
+            {locale === "pt"
+              ? "Projeto Educacional • 2026"
+              : "Educational Project • 2026"}
+          </p>
         </div>
       </div>
     </motion.footer>

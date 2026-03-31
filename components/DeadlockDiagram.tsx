@@ -1,21 +1,24 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Circle, Square } from "lucide-react";
+import { Circle, Square } from "lucide-react";
+import { useLocale } from "@/contexts/LocaleContext";
 
 export function DeadlockDiagram() {
+  const { t, locale } = useLocale();
+
   const cars = [
-    { id: "Carro A", dir: "Norte", color: "bg-accent-north", x: 150, y: 50 },
-    { id: "Carro B", dir: "Leste", color: "bg-accent-east", x: 250, y: 150 },
-    { id: "Carro C", dir: "Sul", color: "bg-accent-south", x: 150, y: 250 },
-    { id: "Carro D", dir: "Oeste", color: "bg-accent-west", x: 50, y: 150 },
+    { id: locale === "pt" ? "Carro A" : "Car A", dir: t("diagram.node.north"), color: "bg-accent-north", x: 150, y: 50 },
+    { id: locale === "pt" ? "Carro B" : "Car B", dir: t("diagram.node.east"), color: "bg-accent-east", x: 250, y: 150 },
+    { id: locale === "pt" ? "Carro C" : "Car C", dir: t("diagram.node.south"), color: "bg-accent-south", x: 150, y: 250 },
+    { id: locale === "pt" ? "Carro D" : "Car D", dir: t("diagram.node.west"), color: "bg-accent-west", x: 50, y: 150 },
   ];
 
   const arrows = [
-    { from: 0, to: 1, label: "espera" },
-    { from: 1, to: 2, label: "espera" },
-    { from: 2, to: 3, label: "espera" },
-    { from: 3, to: 0, label: "espera" },
+    { from: 0, to: 1 },
+    { from: 1, to: 2 },
+    { from: 2, to: 3 },
+    { from: 3, to: 0 },
   ];
 
   return (
@@ -27,7 +30,7 @@ export function DeadlockDiagram() {
       className="bg-card rounded-xl border border-border p-6"
     >
       <h3 className="text-lg font-semibold text-foreground mb-6 text-center">
-        Diagrama de Espera Circular
+        {t("diagram.title")}
       </h3>
 
       <div className="relative w-[300px] h-[300px] mx-auto">
@@ -35,7 +38,7 @@ export function DeadlockDiagram() {
         <svg className="absolute inset-0 w-full h-full">
           <defs>
             <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-              <polygon points="0 0, 10 3.5, 0 7" fill="#FF4560" />
+              <polygon points="0 0, 10 3.5, 0 7" fill="var(--accent-north)" />
             </marker>
           </defs>
           {arrows.map((arrow, i) => {
@@ -52,7 +55,7 @@ export function DeadlockDiagram() {
                 y1={from.y}
                 x2={to.x}
                 y2={to.y}
-                stroke="#FF4560"
+                stroke="var(--accent-north)"
                 strokeWidth="2"
                 markerEnd="url(#arrowhead)"
               />
@@ -89,8 +92,12 @@ export function DeadlockDiagram() {
       </div>
 
       <div className="mt-6 text-center text-sm text-muted-foreground">
-        <p>Cada carro espera o outro liberar a via</p>
-        <p className="text-accent-north font-medium mt-2">Ciclo de espera circular = Deadlock</p>
+        <p>{t("diagram.description")}</p>
+        <p className="text-accent-north font-medium mt-2">
+          {locale === "pt"
+            ? "Ciclo de espera circular = Deadlock"
+            : "Circular wait = Deadlock"}
+        </p>
       </div>
     </motion.div>
   );

@@ -6,36 +6,46 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        background: "#0a0e1a",
-        foreground: "#ffffff",
+        background: "var(--background)",
+        foreground: "var(--foreground)",
         primary: {
-          DEFAULT: "#008FFB",
-          foreground: "#ffffff",
+          DEFAULT: "var(--primary)",
+          foreground: "var(--primary-foreground)",
         },
         secondary: {
-          DEFAULT: "#161b2e",
-          foreground: "#ffffff",
+          DEFAULT: "var(--secondary)",
+          foreground: "var(--secondary-foreground)",
         },
         accent: {
-          north: "#FF4560",
-          south: "#00E396",
-          east: "#008FFB",
-          west: "#FEB019",
+          north: "var(--accent-north)",
+          south: "var(--accent-south)",
+          east: "var(--accent-east)",
+          west: "var(--accent-west)",
         },
         muted: {
-          DEFAULT: "#232a40",
-          foreground: "#94a3b8",
+          DEFAULT: "var(--muted)",
+          foreground: "var(--muted-foreground)",
         },
         card: {
-          DEFAULT: "#161b2e",
-          foreground: "#ffffff",
+          DEFAULT: "var(--card)",
+          foreground: "var(--card-foreground)",
         },
-        border: "#232a40",
-        input: "#232a40",
-        ring: "#008FFB",
+        border: "var(--border)",
+        input: "var(--input)",
+        ring: "var(--ring)",
+        traffic: {
+          red: "var(--traffic-red)",
+          yellow: "var(--traffic-yellow)",
+          green: "var(--traffic-green)",
+        },
+        road: {
+          surface: "var(--road-surface)",
+          line: "var(--road-line)",
+        },
       },
       animation: {
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
@@ -43,9 +53,14 @@ const config: Config = {
       },
       keyframes: {
         glow: {
-          "0%": { boxShadow: "0 0 5px rgba(0, 143, 251, 0.5)" },
-          "100%": { boxShadow: "0 0 20px rgba(0, 143, 251, 0.8)" },
+          "0%": { boxShadow: "0 0 5px rgba(199, 91, 57, 0.3)" },
+          "100%": { boxShadow: "0 0 20px rgba(199, 91, 57, 0.6)" },
         },
+      },
+      boxShadow: {
+        sm: "var(--shadow-sm)",
+        DEFAULT: "var(--shadow)",
+        lg: "var(--shadow-lg)",
       },
     },
   },

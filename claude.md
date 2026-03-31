@@ -77,5 +77,67 @@ diretamente com a lógica de deadlocks potenciais.
 coordena todos os elementos na estrutura MVC para garantir um movimento constante em 
 execução sem conflitos no estado dos veículos ou luzes.
   
-Esse modelo orientado a objetos facilita reutilização de código, testabilidade unificada e        
+Esse modelo orientado a objetos facilita reutilização de código, testabilidade unificada e
 uma abordagem clara para resolver o problema dentro do projeto web interativa criado.
+
+## Resumo do Frontend
+
+O frontend é uma aplicação **Next.js com React e TypeScript** que oferece uma experiência educativa interativa sobre o conceito de deadlock em sistemas operacionais. A interface é organizada em seções que guiam o usuário através do aprendizado:
+
+### Estrutura da Interface
+
+- **Hero Section**: Apresentação do tema com título animado e explicação do propósito educativo
+- **Cards de Conceitos**: Três cards explicativos cobrindo (1) definição de deadlock, (2) condições necessárias (exclusão mútua, posse e espera, sem preempção, espera circular), e (3) analogia com trânsito
+- **Simulação do Problema**: Canvas interativo no modo "deadlock" onde carros entram no cruzamento sem coordenação, demonstrando como o deadlock ocorre naturalmente
+- **Diagrama e Solução**: Visualização gráfica do problema e cards explicando estratégias de prevenção
+- **Simulação da Solução**: Canvas no modo "solution" com semáforos controlando o fluxo alternado
+- **Seção de Aprendizado**: Resumo dos conceitos de sistemas concorrentes e prevenção de deadlock
+
+### Componentes Principais
+
+- **`SimulationCanvas`**: Componente central que renderiza a simulação em tempo real usando HTML5 Canvas. Exibe controles de play/pause/reset, estatísticas ao vivo (carros completados, aguardando, em colisão, cruzando), e um overlay visual pulsante quando deadlock é detectado
+- **`useSimulation`**: Hook customizado que gerencia o estado da simulação, coordenando o loop de animação via `requestAnimationFrame` e sincronizando estatísticas entre a engine e a UI
+- **Componentes Auxiliares**: `ConceptCard`, `DeadlockDiagram`, `SolutionCard`, `Header`, `Footer`
+
+### Funcionalidades Interativas
+
+- **Controles de Simulação**: Botões para iniciar, pausar e reiniciar cada cenário independentemente
+- **Estatísticas em Tempo Real**: Acompanhamento dinâmico do estado dos carros na simulação
+- **Detecção Visual de Deadlock**: Overlay com efeito de pulsação e mensagem "DEADLOCK DETECTADO!" quando ocorre impasse
+- **Design Responsivo**: Interface adaptável a diferentes tamanhos de tela usando Tailwind CSS
+- **Animações Suaves**: Transições controladas por Framer Motion para melhor experiência do usuário
+
+## Temas e Internacionalização
+
+### Sistema de Temas (Light/Dark Mode)
+
+O projeto implementa um sistema completo de temas com **variáveis CSS** que se adaptam automaticamente ao modo claro ou escuro:
+
+**Paleta de Cores Natural** (menos "IA", mais terrosa):
+- **Light Mode**: Fundo creme (`#faf8f5`), cores terrosas e acentos em tom terra-cota
+- **Dark Mode**: Fundo cinza-escuro quente (`#1c1a18`), cores sóbrias e acentos mais suaves
+
+**Implementação**:
+- `globals.css`: Define variáveis CSS para ambos os modos usando a classe `.dark`
+- `ThemeContext`: Gerencia estado do tema com persistência em localStorage e sincronização com preferência do sistema
+- `tailwind.config.ts`: Configurado com `darkMode: "class"` para suportar alternância de classe
+- Renderização Canvas: Cores obtidas dinamicamente via `getComputedStyle` para adaptar a simulação ao tema atual
+
+### Internacionalização (i18n)
+
+Sistema de tradução completo suportando **Português (PT)** e **Inglês (EN)**:
+
+**Estrutura**:
+- `i18n/translations.ts`: Contém todas as traduções organizadas por chave
+- `LocaleContext`: Gerencia estado do idioma com persistência em localStorage e detecção automática do idioma do navegador
+- Componentes acessam traduções via hook `useLocale()` com função `t(key)`
+
+**Conteúdo Traduzido**:
+- Todo o texto da interface (títulos, descrições, botões)
+- Estatísticas da simulação
+- Mensagens de alerta (deadlock detectado)
+- Conteúdo educacional e referências
+
+**Controles no Header**:
+- Botão de tema (sol/lua) para alternar entre light/dark
+- Botão de idioma (PT/EN) para alternar entre português e inglês

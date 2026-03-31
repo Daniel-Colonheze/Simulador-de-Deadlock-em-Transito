@@ -9,22 +9,29 @@ export const HALF = ROAD_W / 2;
 export const CAR_BODY_LEN = 46;  // along travel axis
 export const CAR_BODY_WID = 22;  // across travel axis
 
+// Cores adaptáveis - serão sobrescritas pelo CSS quando disponível
+// Estas são cores de fallback para quando CSS não está disponível
 export const COLORS = {
-  bg: "#0a0e1a",
-  road: "#161b2e",
-  roadLine: "#232a40",
-  grass: "#0d1420",
-  gridLine: "#0f1520",
-  north: "#FF4560",
-  south: "#00E396",
-  east: "#008FFB",
-  west: "#FEB019",
-  deadlockFlash: "#FF4560",
-  semGreen: "#00E396",
-  semRed: "#FF4560",
-  semYellow: "#FEB019",
+  // Background/road colors - usar variáveis CSS
+  bg: "#1c1a18",
+  road: "var(--road-surface, #4a525a)",
+  roadLine: "var(--road-line, #5a6066)",
+  grass: "var(--background, #1c1a18)",
+  gridLine: "var(--border, #403c38)",
+
+  // Car colors - tons naturais que funcionam em ambos os modos
+  north: "var(--accent-north, #c94a4a)",
+  south: "var(--accent-south, #4a9c6d)",
+  east: "var(--accent-east, #3d7aa8)",
+  west: "var(--accent-west, #c9913d)",
+
+  // Status colors
+  deadlockFlash: "var(--accent-north, #c94a4a)",
+  semGreen: "var(--traffic-green, #4da866)",
+  semRed: "var(--traffic-red, #d94646)",
+  semYellow: "var(--traffic-yellow, #e6b84d)",
   broken: "#6b4c4c",
-  smoke: "rgba(180,140,100,",
+  smoke: "rgba(140,130,120,",
 } as const;
 
 export const DIRECTIONS = ["north", "south", "east", "west"] as const;

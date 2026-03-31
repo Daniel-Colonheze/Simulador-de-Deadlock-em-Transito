@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AppProviders } from "@/providers/AppProviders";
 
 export const metadata: Metadata = {
-  title: "Simulador de Deadlock em Trânsito",
-  description: "Simulação interativa do problema de deadlock em sistemas concorrentes usando um cenário de trânsito",
+  title: "Deadlock Traffic Simulator",
+  description:
+    "Interactive simulation of the deadlock problem in concurrent systems using a traffic scenario",
 };
 
 export default function RootLayout({
@@ -12,12 +14,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </head>
-      <body className="antialiased min-h-screen bg-background">
-        {children}
+      <body className="antialiased min-h-screen bg-background" suppressHydrationWarning>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );
