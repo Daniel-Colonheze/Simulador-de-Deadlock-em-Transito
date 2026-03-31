@@ -59,8 +59,8 @@ export function Footer() {
         <div className="border-t border-border mt-8 pt-6 text-center text-sm text-muted-foreground">
           <p className="mt-1">
             {locale === "pt"
-              ? "Projeto Educacional • 2026"
-              : "Educational Project • 2026"}
+              ? "Feito por Daniel de Oliveira Colonheze • 2026 • Todos os direitos reservados ©"
+              : "Made by Daniel de Oliveira Colonheze • 2026  All rights reserved ©"}
           </p>
         </div>
       </div>

@@ -7,28 +7,36 @@ import type { Simulation } from "./simulation";
 import type { Car } from "./car";
 import type { Direction } from "./constants";
 
-// Helper to get CSS variable value
-function getCSSVariable(name: string, fallback: string): string {
-  if (typeof window === "undefined") return fallback;
-  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+// Helper para obter valor de variável CSS de um elemento específico
+function getCSSVariableFromElement(element: Element, name: string, fallback: string): string {
+  if (!element) return fallback;
+  const value = getComputedStyle(element).getPropertyValue(name).trim();
   return value || fallback;
 }
 
-// Get theme-aware colors
-function getThemeColors() {
+// Obtém as cores a partir do elemento que contém a simulação (div com .simulation-drawing-area)
+// Se não encontrar, usa documentElement como fallback.
+function getThemeColors(canvasElement: HTMLCanvasElement) {
+  // Procura o primeiro ancestral com a classe 'simulation-drawing-area'
+  let container: Element | null = canvasElement;
+  while (container && !container.classList?.contains('simulation-drawing-area')) {
+    container = container.parentElement;
+  }
+  const element = container || document.documentElement;
+
   return {
-    road: getCSSVariable("--road-surface", "#4a525a"),
-    roadLine: getCSSVariable("--road-line", "#5a6066"),
-    background: getCSSVariable("--background", "#1c1a18"),
-    border: getCSSVariable("--border", "#403c38"),
-    accentNorth: getCSSVariable("--accent-north", "#c94a4a"),
-    accentEast: getCSSVariable("--accent-east", "#3d7aa8"),
-    accentSouth: getCSSVariable("--accent-south", "#4a9c6d"),
-    accentWest: getCSSVariable("--accent-west", "#c9913d"),
-    trafficRed: getCSSVariable("--traffic-red", "#d94646"),
-    trafficYellow: getCSSVariable("--traffic-yellow", "#e6b84d"),
-    trafficGreen: getCSSVariable("--traffic-green", "#4da866"),
-    card: getCSSVariable("--card", "#252320"),
+    road: getCSSVariableFromElement(element, "--road-surface", "#4a525a"),
+    roadLine: getCSSVariableFromElement(element, "--road-line", "#5a6066"),
+    background: getCSSVariableFromElement(element, "--background", "#1c1a18"),
+    border: getCSSVariableFromElement(element, "--border", "#403c38"),
+    accentNorth: getCSSVariableFromElement(element, "--accent-north", "#c94a4a"),
+    accentEast: getCSSVariableFromElement(element, "--accent-east", "#3d7aa8"),
+    accentSouth: getCSSVariableFromElement(element, "--accent-south", "#4a9c6d"),
+    accentWest: getCSSVariableFromElement(element, "--accent-west", "#c9913d"),
+    trafficRed: getCSSVariableFromElement(element, "--traffic-red", "#d94646"),
+    trafficYellow: getCSSVariableFromElement(element, "--traffic-yellow", "#e6b84d"),
+    trafficGreen: getCSSVariableFromElement(element, "--traffic-green", "#4da866"),
+    card: getCSSVariableFromElement(element, "--card", "#252320"),
   };
 }
 
@@ -49,9 +57,7 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
 }
 
 // ── road ─────────────────────────────────────
-export function drawRoad(ctx: CanvasRenderingContext2D) {
-  const colors = getThemeColors();
-
+export function drawRoad(ctx: CanvasRenderingContext2D, colors: ReturnType<typeof getThemeColors>) {
   // Background
   ctx.fillStyle = colors.background;
   ctx.fillRect(0, 0, W, H);
@@ -74,9 +80,9 @@ export function drawRoad(ctx: CanvasRenderingContext2D) {
   ctx.strokeStyle = colors.roadLine;
   ctx.lineWidth = 2;
   ctx.beginPath(); ctx.moveTo(CX, 0);       ctx.lineTo(CX, CY - HALF); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(CX, CY+HALF); ctx.lineTo(CX, H);         ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(CX, CY + HALF); ctx.lineTo(CX, H);         ctx.stroke();
   ctx.beginPath(); ctx.moveTo(0, CY);       ctx.lineTo(CX - HALF, CY); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(CX+HALF, CY); ctx.lineTo(W, CY);         ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(CX + HALF, CY); ctx.lineTo(W, CY);         ctx.stroke();
   ctx.setLineDash([]);
 
   // Zebra crossings (subtle)
@@ -94,14 +100,13 @@ export function drawRoad(ctx: CanvasRenderingContext2D) {
   ctx.strokeStyle = colors.roadLine + "60";
   ctx.lineWidth = 3;
   ctx.beginPath(); ctx.moveTo(CX, CY - HALF);       ctx.lineTo(CX + ROAD_W, CY - HALF); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(CX - ROAD_W, CY+HALF); ctx.lineTo(CX, CY + HALF);         ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(CX+HALF, CY - ROAD_W); ctx.lineTo(CX+HALF, CY);           ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(CX - HALF, CY);        ctx.lineTo(CX-HALF, CY+ROAD_W);    ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(CX - ROAD_W, CY + HALF); ctx.lineTo(CX, CY + HALF);         ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(CX + HALF, CY - ROAD_W); ctx.lineTo(CX + HALF, CY);           ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(CX - HALF, CY);        ctx.lineTo(CX - HALF, CY + ROAD_W);    ctx.stroke();
 }
 
 // ── traffic lights (vertical for N/S, horizontal for E/W, with inverted red/green for E/W) ──
-export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: number, state: string, direction: Direction) {
-  const colors = getThemeColors();
+export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: number, state: string, direction: Direction, colors: ReturnType<typeof getThemeColors>) {
   const isVertical = direction === 'north' || direction === 'south';
 
   if (isVertical) {
@@ -116,7 +121,7 @@ export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: nu
     ctx.stroke();
 
     const radius = 5;
-    const yOffsets = [-h/2 + 8, 0, h/2 - 8];
+    const yOffsets = [-h / 2 + 8, 0, h / 2 - 8];
     const lightColors = [colors.trafficRed, colors.trafficYellow, colors.trafficGreen];
 
     for (let i = 0; i < 3; i++) {
@@ -149,7 +154,7 @@ export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: nu
     ctx.stroke();
 
     const radius = 5;
-    const xOffsets = [-w/2 + 10, 0, w/2 - 10];
+    const xOffsets = [-w / 2 + 10, 0, w / 2 - 10];
     // Invertido: east -> vermelho à direita (green left), west -> vermelho à esquerda (green right)
     let lightColors: string[];
     if (direction === 'east') {
@@ -180,8 +185,7 @@ export function drawTrafficLight(ctx: CanvasRenderingContext2D, x: number, y: nu
 }
 
 // ── car ───────────────────────────────────────
-export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolean) {
-  const colors = getThemeColors();
+export function drawCar(ctx: CanvasRenderingContext2D, car: Car, flashOn: boolean, colors: ReturnType<typeof getThemeColors>) {
   const cfg = LANE_CONFIG[car.direction];
   const isV = cfg.axis === "y";
   const cLen = CAR_BODY_LEN;
@@ -279,8 +283,7 @@ export function drawSmoke(ctx: CanvasRenderingContext2D, car: Car) {
 }
 
 // ── intersection deadlock highlight ──────────
-export function drawDeadlockHighlight(ctx: CanvasRenderingContext2D, on: boolean) {
-  const colors = getThemeColors();
+export function drawDeadlockHighlight(ctx: CanvasRenderingContext2D, on: boolean, colors: ReturnType<typeof getThemeColors>) {
   ctx.fillStyle   = on ? colors.accentNorth + "25" : colors.accentNorth + "10";
   ctx.strokeStyle = on ? colors.accentNorth : colors.accentNorth + "50";
   ctx.lineWidth   = 2;
@@ -294,10 +297,13 @@ export function renderScene(ctx: CanvasRenderingContext2D, sim: Simulation, flas
   ctx.save();
   ctx.scale(scale, scale);
 
-  ctx.clearRect(0, 0, W, H);
-  drawRoad(ctx);
+  // Obtém as cores a partir do elemento pai (que deve ter a classe .simulation-drawing-area)
+  const colors = getThemeColors(ctx.canvas);
 
-  if (sim.deadlocked) drawDeadlockHighlight(ctx, flashOn);
+  ctx.clearRect(0, 0, W, H);
+  drawRoad(ctx, colors);
+
+  if (sim.deadlocked) drawDeadlockHighlight(ctx, flashOn, colors);
 
   sim.cars.forEach(car => drawSmoke(ctx, car));
 
@@ -305,12 +311,12 @@ export function renderScene(ctx: CanvasRenderingContext2D, sim: Simulation, flas
     DIRECTIONS.forEach(d => {
       const cfg = LANE_CONFIG[d];
       const { x, y } = cfg.semPos;
-      drawTrafficLight(ctx, x, y, sim.lights[d].state, d);
+      drawTrafficLight(ctx, x, y, sim.lights[d].state, d, colors);
     });
   }
 
   sim.cars.forEach(car => {
-    if (car.state !== "done") drawCar(ctx, car, flashOn);
+    if (car.state !== "done") drawCar(ctx, car, flashOn, colors);
   });
 
   ctx.restore();

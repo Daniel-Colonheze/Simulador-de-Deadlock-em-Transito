@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 type Theme = "light" | "dark";
 
@@ -18,13 +12,17 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("light");
-  const [mounted, setMounted] = useState(false);
+export function ThemeProvider({
+  children,
+  initialTheme = "light",
+}: {
+  children: ReactNode;
+  initialTheme?: Theme;
+}) {
+  const [theme, setThemeState] = useState<Theme>(initialTheme);
 
+  // Efeito para ler preferências salvas (apenas no cliente)
   useEffect(() => {
-    setMounted(true);
-    // Check local storage or system preference
     const savedTheme = localStorage.getItem("theme") as Theme | null;
     if (savedTheme) {
       setThemeState(savedTheme);
@@ -33,9 +31,8 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // Efeito para aplicar a classe no html e persistir
   useEffect(() => {
-    if (!mounted) return;
-
     const root = document.documentElement;
     if (theme === "dark") {
       root.classList.add("dark");
@@ -43,7 +40,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       root.classList.remove("dark");
     }
     localStorage.setItem("theme", theme);
-  }, [theme, mounted]);
+  }, [theme]);
 
   const toggleTheme = () => {
     setThemeState((prev) => (prev === "light" ? "dark" : "light"));
@@ -52,11 +49,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
   };
-
-  // Prevent flash of wrong theme
-  if (!mounted) {
-    return <>{children}</>;
-  }
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme, setTheme }}>

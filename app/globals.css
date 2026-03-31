@@ -3,86 +3,86 @@
 @tailwind utilities;
 
 /* ============================================
-   THEME VARIABLES - NATURAL COLOR PALETTE
+   THEME VARIABLES - MODERN NEUTRAL PALETTE
    ============================================ */
 
 :root {
-  /* Light Mode - Cores naturais e terrosas */
-  --background: #faf8f5;
-  --foreground: #2d2a26;
+  /* Light Mode - Tons neutros com azul suave */
+  --background: #f9fafb;
+  --foreground: #111827;
 
-  --primary: #c75b39;
+  --primary: #2563eb;
   --primary-foreground: #ffffff;
 
-  --secondary: #f5f0eb;
-  --secondary-foreground: #4a4540;
+  --secondary: #f3f4f6;
+  --secondary-foreground: #1f2937;
 
   --card: #ffffff;
-  --card-foreground: #2d2a26;
+  --card-foreground: #111827;
 
-  --muted: #e8e4df;
-  --muted-foreground: #6b6560;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
 
-  --border: #d4cec7;
-  --input: #d4cec7;
-  --ring: #c75b39;
+  --border: #e5e7eb;
+  --input: #e5e7eb;
+  --ring: #2563eb;
 
-  /* Accent colors - naturais */
-  --accent-north: #c94a4a;
-  --accent-south: #4a9c6d;
-  --accent-east: #3d7aa8;
-  --accent-west: #c9913d;
+  /* Accent colors - modern */
+  --accent-north: #3b82f6;
+  --accent-south: #10b981;
+  --accent-east: #f59e0b;
+  --accent-west: #ef4444;
 
-  /* Traffic light colors */
-  --traffic-red: #d94646;
-  --traffic-yellow: #e6b84d;
-  --traffic-green: #4da866;
+  /* Traffic light colors (mantidos vibrantes) */
+  --traffic-red: #ef4444;
+  --traffic-yellow: #f59e0b;
+  --traffic-green: #10b981;
 
-  /* Road colors */
-  --road-surface: #4a525a;
-  --road-line: #e8e4df;
+  /* Road colors (usados apenas no modo light, mas serão substituídos na simulação) */
+  --road-surface: #4b5563;
+  --road-line: #9ca3af;
 
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgba(45, 42, 38, 0.05);
-  --shadow: 0 4px 6px -1px rgba(45, 42, 38, 0.1), 0 2px 4px -2px rgba(45, 42, 38, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(45, 42, 38, 0.1), 0 4px 6px -4px rgba(45, 42, 38, 0.1);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
 }
 
 .dark {
-  /* Dark Mode - Cores profundas e sóbrias */
-  --background: #1c1a18;
-  --foreground: #f0ebe5;
+  /* Dark Mode - Tons escuros com azul profundo */
+  --background: #111827;
+  --foreground: #f9fafb;
 
-  --primary: #d4856a;
-  --primary-foreground: #1c1a18;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
 
-  --secondary: #2d2a26;
-  --secondary-foreground: #d8d3cc;
+  --secondary: #1f2937;
+  --secondary-foreground: #f3f4f6;
 
-  --card: #252320;
-  --card-foreground: #f0ebe5;
+  --card: #1f2937;
+  --card-foreground: #f9fafb;
 
-  --muted: #3a3632;
-  --muted-foreground: #9a948c;
+  --muted: #374151;
+  --muted-foreground: #9ca3af;
 
-  --border: #403c38;
-  --input: #403c38;
-  --ring: #d4856a;
+  --border: #374151;
+  --input: #374151;
+  --ring: #3b82f6;
 
-  /* Accent colors - tons mais suaves no dark */
-  --accent-north: #e57373;
-  --accent-south: #81c995;
-  --accent-east: #7db9d8;
-  --accent-west: #e6b566;
+  /* Accent colors - mais suaves no dark */
+  --accent-north: #60a5fa;
+  --accent-south: #34d399;
+  --accent-east: #fbbf24;
+  --accent-west: #f87171;
 
-  /* Traffic light colors - mantidos vibrantes */
-  --traffic-red: #ff5a5a;
-  --traffic-yellow: #ffd166;
-  --traffic-green: #6ccf8a;
+  /* Traffic light colors - vibrantes */
+  --traffic-red: #f87171;
+  --traffic-yellow: #fbbf24;
+  --traffic-green: #34d399;
 
-  /* Road colors */
-  --road-surface: #3a4046;
-  --road-line: #5a6066;
+  /* Road colors (usados apenas no modo dark) */
+  --road-surface: #4b5563;
+  --road-line: #9ca3af;
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
@@ -109,10 +109,49 @@
 @layer utilities {
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, var(--primary) 0%, #8b5a2b 100%);
+    background-image: linear-gradient(135deg, var(--primary) 0%, #60a5fa 100%);
   }
 
   .dark .text-gradient {
-    background-image: linear-gradient(135deg, #d4856a 0%, #e6b566 100%);
+    background-image: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
   }
+}
+
+/* ============================================
+   ÁREA DE DESENHO DA SIMULAÇÃO
+   Cores consistentes e com bom contraste
+   ============================================ */
+.simulation-drawing-area {
+  /* Fundo do canvas (área externa à rua) */
+  --background: #1f2937;
+
+  /* Superfície da rua */
+  --road-surface: #374151;
+  --road-line: #e5e7eb;
+
+  /* Bordas e grid */
+  --border: #4b5563;
+
+  /* Cores dos semáforos – vibrantes */
+  --traffic-red: #f87171;
+  --traffic-yellow: #fbbf24;
+  --traffic-green: #34d399;
+
+  /* Cores dos carros:
+     Norte = vermelho (para deadlock e quebrados)
+     Sul   = verde
+     Leste = amarelo
+     Oeste = laranja/vermelho claro
+  */
+  --accent-north: #f87171;   /* vermelho – usado para deadlock e carros quebrados */
+  --accent-south: #34d399;   /* verde */
+  --accent-east: #fbbf24;    /* amarelo */
+  --accent-west: #f97316;    /* laranja */
+
+  /* Cores do card interno (se necessário) */
+  --card: #1f2937;
+  --foreground: #f9fafb;
+  --secondary: #374151;
+  --muted: #4b5563;
+  --muted-foreground: #9ca3af;
 }

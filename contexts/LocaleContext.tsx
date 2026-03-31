@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { translations, Locale, TranslationKey } from "@/i18n/translations";
 
 type TranslateFunction = (key: TranslationKey, params?: Record<string, string | number>) => string;
@@ -19,18 +13,16 @@ interface LocaleContextType {
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
-export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>("pt");
-  const [mounted, setMounted] = useState(false);
+export function LocaleProvider({ children, initialLocale = "pt" }: { children: ReactNode; initialLocale?: Locale }) {
+  // Começa com o locale inicial (definido no servidor via cookie/header)
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
+  // Efeito que só roda no cliente para sobrescrever com preferências salvas/navegador
   useEffect(() => {
-    setMounted(true);
-    // Check local storage or browser language
     const savedLocale = localStorage.getItem("locale") as Locale | null;
     if (savedLocale && (savedLocale === "pt" || savedLocale === "en")) {
       setLocaleState(savedLocale);
     } else {
-      // Check browser language
       const browserLang = navigator.language.split("-")[0];
       if (browserLang === "en") {
         setLocaleState("en");
@@ -40,13 +32,11 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  // Efeito para persistir e atualizar o atributo lang quando o locale muda
   useEffect(() => {
-    if (mounted) {
-      localStorage.setItem("locale", locale);
-      // Update html lang attribute
-      document.documentElement.lang = locale === "pt" ? "pt-BR" : "en";
-    }
-  }, [locale, mounted]);
+    localStorage.setItem("locale", locale);
+    document.documentElement.lang = locale === "pt" ? "pt-BR" : "en";
+  }, [locale]);
 
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale);
@@ -54,20 +44,13 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
 
   const t: TranslateFunction = (key, params) => {
     let text = translations[locale][key] || key;
-
-    // Replace parameters if provided
     if (params) {
       Object.entries(params).forEach(([paramKey, paramValue]) => {
         text = text.replace(`{{${paramKey}}}`, String(paramValue));
       });
     }
-
     return text;
   };
-
-  if (!mounted) {
-    return <>{children}</>;
-  }
 
   return (
     <LocaleContext.Provider value={{ locale, setLocale, t }}>

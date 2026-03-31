@@ -1,12 +1,14 @@
+// providers/AppProviders.tsx
 "use client";
 
 import { ThemeProvider } from "@/contexts/ThemeContext";
-import { LocaleProvider } from "@/contexts/LocaleContext";
 
-export function AppProviders({ children }: { children: React.ReactNode }) {
-  return (
-    <ThemeProvider>
-      <LocaleProvider>{children}</LocaleProvider>
-    </ThemeProvider>
-  );
+export function AppProviders({
+  children,
+  initialTheme,
+}: {
+  children: React.ReactNode;
+  initialTheme?: "light" | "dark";
+}) {
+  return <ThemeProvider initialTheme={initialTheme}>{children}</ThemeProvider>;
 }

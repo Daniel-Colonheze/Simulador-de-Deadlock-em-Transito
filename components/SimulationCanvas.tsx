@@ -26,7 +26,6 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
     const updateSize = () => {
       if (!containerRef.current || !canvasRef.current) return;
       const containerWidth = containerRef.current.clientWidth;
-      // Limita o tamanho máximo para não ficar enorme em desktop
       const maxSize = Math.min(containerWidth, 600);
       const newScale = maxSize / W;
       setScale(newScale);
@@ -88,7 +87,7 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
       <div className="p-4 sm:p-6 bg-background flex justify-center">
         <div
           ref={containerRef}
-          className="relative rounded-lg overflow-hidden border border-border w-full max-w-[600px]"
+          className="relative rounded-lg overflow-hidden border border-border w-full max-w-[600px] simulation-drawing-area"
         >
           <canvas ref={canvasRef} className="block w-full h-auto" style={{ aspectRatio: "1 / 1" }} />
           {stats.deadlocked && (
