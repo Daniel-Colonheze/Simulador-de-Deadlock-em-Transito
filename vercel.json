@@ -1,5 +1,5 @@
 {
   "installCommand": "npm install --legacy-peer-deps",
-  "buildCommand": "npx --yes next@14.1.0 build",
+  "buildCommand": "next build",
   "framework": "nextjs"
 }
