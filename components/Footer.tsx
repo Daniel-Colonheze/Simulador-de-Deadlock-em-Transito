@@ -12,7 +12,7 @@ export function Footer() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.5, duration: 0.5 }}
-      className="border-t border-border bg-card/30 mt-16"
+      className="border-t border-border bg-card/50 backdrop-blur-sm mt-16"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">

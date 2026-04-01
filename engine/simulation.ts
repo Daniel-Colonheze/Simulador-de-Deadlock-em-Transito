@@ -41,6 +41,11 @@ export class Simulation {
   GROUP_YELLOW: number;
   cyclePhase: "green" | "yellow";
 
+  // Collision settings
+  private readonly COLLISION_DISTANCE = 20;
+  private readonly MAX_BROKEN_CARS = 8;   // limite máximo de carros quebrados
+  private readonly DEADLOCK_THRESHOLD = 4; // deadlock quando 4 quebrarem
+
   constructor(mode: SimulationMode) {
     this.mode = mode;
     this.cars = [];
@@ -148,12 +153,51 @@ export class Simulation {
     return true;
   }
 
-  // ── Deadlock detection ──
+  // ── Colisões (apenas modo deadlock) ──
+  private _checkCollisions() {
+    if (this.mode !== "deadlock") return;
+
+    const cars = this.cars;
+    let brokenCount = cars.filter(c => c.state === "broken").length;
+
+    for (let i = 0; i < cars.length; i++) {
+      const carA = cars[i];
+      if (carA.state === "done") continue;
+      // Se já atingiu o limite, não marca mais nenhum carro
+      if (brokenCount >= this.MAX_BROKEN_CARS) break;
+
+      for (let j = i + 1; j < cars.length; j++) {
+        const carB = cars[j];
+        if (carB.state === "done") continue;
+        if (brokenCount >= this.MAX_BROKEN_CARS) break;
+
+        const dx = carA.x - carB.x;
+        const dy = carA.y - carB.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < this.COLLISION_DISTANCE) {
+          // Marca ambos como quebrados, se ainda não estiverem
+          if (carA.state !== "broken") {
+            carA.state = "broken";
+            brokenCount++;
+          }
+          if (carB.state !== "broken") {
+            carB.state = "broken";
+            brokenCount++;
+          }
+        }
+      }
+    }
+  }
+
+  // ── Deadlock detection (baseado em carros quebrados) ──
   private _checkDeadlock() {
-    if (this.mode !== "deadlock") { this.deadlocked = false; return; }
-    const alive = this.cars.filter(c => c.state !== "done");
-    const stuck = alive.filter(c => c.state === "waiting" || c.state === "broken");
-    this.deadlocked = stuck.length >= 3 && alive.length >= 3;
+    if (this.mode !== "deadlock") {
+      this.deadlocked = false;
+      return;
+    }
+    const brokenCount = this.cars.filter(c => c.state === "broken").length;
+    this.deadlocked = brokenCount >= this.DEADLOCK_THRESHOLD;
   }
 
   // ── Main update ──
@@ -172,7 +216,7 @@ export class Simulation {
     // Update lights (apenas no modo solução)
     if (this.mode === "solution") this._updateLights();
 
-    // Update cars
+    // Update cars (movimento)
     const alive = this.cars.filter(c => c.state !== "done");
     for (const car of alive) {
       car.update(
@@ -182,14 +226,16 @@ export class Simulation {
       );
     }
 
+    // Verifica colisões (somente deadlock)
+    this._checkCollisions();
+
+    // Verifica deadlock (baseado em quebrados)
     this._checkDeadlock();
 
-    // Remove carros concluídos e libera o lock da direção (se ainda estiver adquirido)
+    // Remove carros concluídos e libera o lock da direção
     this.cars = this.cars.filter(c => {
       if (c.state === "done") {
         this.carsCompleted++;
-        // Libera o lock associado à direção do carro que saiu
-        // (importante para evitar que o semáforo fique permanentemente vermelho)
         this.lights[c.direction].release();
         return false;
       }

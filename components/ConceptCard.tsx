@@ -1,20 +1,18 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { ReactNode } from "react";
+import { motion } from "framer-motion";
 
 interface ConceptCardProps {
   title: string;
+  icon: ReactNode;
   children: ReactNode;
-  icon?: ReactNode;
   variant?: "default" | "danger" | "success";
 }
 
-export function ConceptCard({ title, children, icon, variant = "default" }: ConceptCardProps) {
-  const variants = {
-    default: "border-border bg-card",
-    danger: "border-accent-north/30 bg-accent-north/5",
-    success: "border-accent-south/30 bg-accent-south/5",
+export function ConceptCard({ title, icon, children, variant = "default" }: ConceptCardProps) {
+  const variantStyles = {
+    default: "border-border bg-card",          // sólido (cor do tema)
+    danger: "border-accent-north/30 bg-card", // sólido (usa bg-card)
+    success: "border-accent-south/30 bg-card", // sólido (usa bg-card)
   };
 
   return (
@@ -23,17 +21,13 @@ export function ConceptCard({ title, children, icon, variant = "default" }: Conc
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className={`rounded-xl border p-6 ${variants[variant]}`}
+      className={`rounded-xl border ${variantStyles[variant]} p-6 hover:shadow-lg transition-shadow`}
     >
       <div className="flex items-center gap-3 mb-4">
-        {icon && (
-          <div className="p-2 rounded-lg bg-muted">
-            {icon}
-          </div>
-        )}
-        <h3 className="text-lg font-semibold text-foreground">{title}</h3>
+        <div className="p-2 rounded-lg bg-muted/30">{icon}</div>
+        <h3 className="font-serif text-xl font-semibold text-foreground">{title}</h3>
       </div>
-      <div className="text-muted-foreground leading-relaxed">{children}</div>
+      <div className="font-sans text-muted-foreground">{children}</div>
     </motion.div>
   );
 }

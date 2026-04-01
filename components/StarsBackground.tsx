@@ -9,6 +9,8 @@ interface Particle {
   homeY: number;
   vx: number;
   vy: number;
+  size: number;
+  opacity: number;
 }
 
 export function StarsBackground() {
@@ -16,22 +18,27 @@ export function StarsBackground() {
   const particlesRef = useRef<Particle[]>([]);
   const mouseRef = useRef({ x: 0, y: 0, active: false });
   const animationRef = useRef<number>();
-  const [particleColor, setParticleColor] = useState("#1f2937"); // cor padrão (escura)
+  const [particleColor, setParticleColor] = useState("#2d3748"); // light: cinza escuro
 
-  // Configurações mais suaves
-  const COUNT = 120;                // menos partículas para fluidez
-  const MAX_SPEED = 1.2;           // velocidade máxima reduzida
-  const MOUSE_RADIUS = 180;         // raio de influência um pouco maior
-  const MOUSE_FORCE = 2.5;          // força reduzida
-  const PARTICLE_RADIUS = 50;       // repulsão entre partículas mais suave
-  const SPRING = 0.012;             // retorno mais lento e suave
+  // Configurações mais ágeis e vivas
+  const COUNT = 180;
+  const MAX_SPEED = 3.2;           // velocidade máxima maior
+  const MOUSE_RADIUS = 200;
+  const MOUSE_FORCE = 5.5;          // força de repulsão mais forte
+  const PARTICLE_RADIUS = 55;       // raio de repulsão entre partículas
+  const SPRING = 0.025;             // força restauradora mais rápida
   const DAMPING = 0.97;             // amortecimento leve
+  const TWINKLE_SPEED = 0.03;       // cintilação mais perceptível
 
-  // Detecta o tema e atualiza a cor das partículas
+  // Observa a classe 'dark' para atualizar a cor
   useEffect(() => {
     const updateColor = () => {
       const isDark = document.documentElement.classList.contains("dark");
-      setParticleColor(isDark ? "#ffffff" : "#374151"); // branco no dark, cinza escuro no light
+      if (isDark) {
+        setParticleColor("#4a7cbb"); // azul médio, não muito claro
+      } else {
+        setParticleColor("#2d3748"); // cinza escuro (bom contraste)
+      }
     };
     updateColor();
     const observer = new MutationObserver(updateColor);
@@ -45,21 +52,32 @@ export function StarsBackground() {
       const x = Math.random() * width;
       const y = Math.random() * height;
       particles.push({
-        x, y,
-        homeX: x, homeY: y,
-        vx: (Math.random() - 0.5) * 0.8,
-        vy: (Math.random() - 0.5) * 0.8,
+        x,
+        y,
+        homeX: x,
+        homeY: y,
+        vx: (Math.random() - 0.5) * 1.8,
+        vy: (Math.random() - 0.5) * 1.8,
+        size: 1.8 + Math.random() * 2.5,
+        opacity: 0.4 + Math.random() * 0.6,
       });
     }
     particlesRef.current = particles;
   };
 
-  const updateParticles = (width: number, height: number, mouseX: number, mouseY: number, mouseActive: boolean) => {
+  const updateParticles = (
+    width: number,
+    height: number,
+    mouseX: number,
+    mouseY: number,
+    mouseActive: boolean,
+  ) => {
     const particles = particlesRef.current;
     for (let i = 0; i < particles.length; i++) {
-      let fx = 0, fy = 0;
+      let fx = 0,
+        fy = 0;
 
-      // Repulsão entre partículas (suave)
+      // Repulsão entre partículas
       for (let j = 0; j < particles.length; j++) {
         if (i === j) continue;
         const dx = particles[i].x - particles[j].x;
@@ -67,7 +85,7 @@ export function StarsBackground() {
         const dist = Math.hypot(dx, dy);
         if (dist < PARTICLE_RADIUS) {
           const angle = Math.atan2(dy, dx);
-          const force = (PARTICLE_RADIUS - dist) / PARTICLE_RADIUS * 0.6;
+          const force = (PARTICLE_RADIUS - dist) / PARTICLE_RADIUS * 1.4;
           fx += Math.cos(angle) * force;
           fy += Math.sin(angle) * force;
         }
@@ -104,28 +122,33 @@ export function StarsBackground() {
       particles[i].vx *= DAMPING;
       particles[i].vy *= DAMPING;
 
-      // Bordas suaves
+      // Bordas suaves (restringem o movimento)
       if (particles[i].x < 15) particles[i].x = 15;
       if (particles[i].x > width - 15) particles[i].x = width - 15;
       if (particles[i].y < 15) particles[i].y = 15;
       if (particles[i].y > height - 15) particles[i].y = height - 15;
+
+      // Cintilação
+      particles[i].opacity += (Math.random() - 0.5) * TWINKLE_SPEED;
+      if (particles[i].opacity < 0.3) particles[i].opacity = 0.3;
+      if (particles[i].opacity > 0.9) particles[i].opacity = 0.9;
     }
   };
 
   const draw = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
     ctx.clearRect(0, 0, width, height);
-    // Não preenchemos fundo – ele é transparente (o fundo do body aparece atrás)
 
-    ctx.globalAlpha = 0.7;
     for (const p of particlesRef.current) {
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 2.2, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       ctx.fillStyle = particleColor;
-      ctx.shadowBlur = 4;
+      ctx.globalAlpha = p.opacity;
+      ctx.shadowBlur = 6;
       ctx.shadowColor = particleColor;
       ctx.fill();
     }
     ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
   };
 
   const resizeCanvas = () => {
@@ -139,7 +162,6 @@ export function StarsBackground() {
     if (particlesRef.current.length === 0) {
       initParticles(width, height);
     } else {
-      // Ajusta proporções
       const oldWidth = canvas.width;
       const oldHeight = canvas.height;
       const scaleX = width / oldWidth;
