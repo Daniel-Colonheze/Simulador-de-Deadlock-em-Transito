@@ -21,6 +21,10 @@ export default function RootLayout({
   const localeCookie = cookieStore.get("locale")?.value;
   const initialLocale: Locale = localeCookie === "en" ? "en" : "pt";
 
+  const themeCookie = cookieStore.get("theme")?.value;
+  const initialTheme: "light" | "dark" =
+    themeCookie === "light" || themeCookie === "dark" ? themeCookie : "light";
+
   return (
     <html lang={initialLocale === "pt" ? "pt-BR" : "en"} suppressHydrationWarning>
       <head>
@@ -30,7 +34,9 @@ export default function RootLayout({
         <StarsBackground />
         <div className="relative z-10">
           <LocaleProvider initialLocale={initialLocale}>
-            <AppProviders>{children}</AppProviders>
+            <AppProviders initialTheme={initialTheme}>
+              {children}
+            </AppProviders>
           </LocaleProvider>
         </div>
       </body>
