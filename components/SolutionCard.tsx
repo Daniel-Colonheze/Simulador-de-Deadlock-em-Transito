@@ -9,17 +9,17 @@ export function SolutionCard() {
 
   const strategies = [
     {
-      icon: <ListOrdered className="w-5 h-5 text-accent-east" />,
+      icon: <ListOrdered className="w-4 h-4 sm:w-5 sm:h-5 text-accent-east" />,
       title: t("solution.strategy1.title"),
       description: t("solution.strategy1.description"),
     },
     {
-      icon: <Ban className="w-5 h-5 text-accent-north" />,
+      icon: <Ban className="w-4 h-4 sm:w-5 sm:h-5 text-accent-north" />,
       title: t("solution.strategy2.title"),
       description: t("solution.strategy2.description"),
     },
     {
-      icon: <TrafficCone className="w-5 h-5 text-accent-south" />,
+      icon: <TrafficCone className="w-4 h-4 sm:w-5 sm:h-5 text-accent-south" />,
       title: t("solution.strategy3.title"),
       description: t("solution.strategy3.description"),
     },
@@ -31,13 +31,13 @@ export function SolutionCard() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5 }}
-      className="bg-card rounded-xl border border-border p-6"
+      className="bg-card rounded-xl border border-border p-4 sm:p-5 md:p-6"
     >
-      <h3 className="text-lg font-semibold text-foreground mb-4">
+      <h3 className="text-base sm:text-lg md:text-xl font-semibold text-foreground mb-3 sm:mb-4">
         {t("solution.title")}
       </h3>
 
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {strategies.map((strategy, i) => (
           <motion.div
             key={strategy.title}
@@ -45,14 +45,18 @@ export function SolutionCard() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.3, delay: i * 0.1 }}
-            className="flex items-start gap-4 p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
+            className="flex items-start gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
           >
-            <div className="p-2 rounded-lg bg-card border border-border">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-card border border-border">
               {strategy.icon}
             </div>
-            <div>
-              <h4 className="font-medium text-foreground">{strategy.title}</h4>
-              <p className="text-sm text-muted-foreground">{strategy.description}</p>
+            <div className="flex-1 min-w-0">
+              <h4 className="font-medium text-foreground text-sm sm:text-base">
+                {strategy.title}
+              </h4>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                {strategy.description}
+              </p>
             </div>
           </motion.div>
         ))}

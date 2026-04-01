@@ -24,30 +24,29 @@ export default function Home() {
   const conditionsList = conditionsText.split("\n");
 
   return (
-    // Removido bg-background para não cobrir o canvas de partículas
     <div className="min-h-screen">
       <Header />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Hero Section */}
-        <section className="text-center mb-16">
+        <section className="text-center mb-12 sm:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+            <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 sm:mb-6">
               {t("hero.title")}
               <span className="text-gradient">{t("hero.highlight")}</span>
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            </h1>
+            <p className="font-sans text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto px-4">
               {t("hero.description")}
             </p>
           </motion.div>
         </section>
 
         {/* Introduction Cards */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 sm:mb-16">
           <ConceptCard
             title={t("concept.what.title")}
             icon={<AlertTriangle className="w-5 h-5 text-accent-north" />}
@@ -77,22 +76,22 @@ export default function Home() {
         </section>
 
         {/* Problem Simulation */}
-        <section className="mb-16">
+        <section className="mb-12 sm:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="flex items-center gap-3 mb-6"
+            className="flex flex-wrap items-center gap-3 mb-4 sm:mb-6"
           >
             <div className="p-2 bg-accent-north/20 rounded-lg">
-              <TrafficCone className="w-6 h-6 text-accent-north" />
+              <TrafficCone className="w-5 h-5 sm:w-6 sm:h-6 text-accent-north" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-foreground">
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 {t("simulation.problem.section")}
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-sm sm:text-base text-muted-foreground">
                 {t("simulation.problem.subtitle")}
               </p>
             </div>
@@ -106,28 +105,28 @@ export default function Home() {
         </section>
 
         {/* Diagram Section */}
-        <section className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+        <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mb-12 sm:mb-16">
           <DeadlockDiagram />
           <SolutionCard />
         </section>
 
         {/* Solution Simulation */}
-        <section className="mb-16">
+        <section className="mb-12 sm:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="flex items-center gap-3 mb-6"
+            className="flex flex-wrap items-center gap-3 mb-4 sm:mb-6"
           >
             <div className="p-2 bg-accent-south/20 rounded-lg">
-              <Shield className="w-6 h-6 text-accent-south" />
+              <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-accent-south" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-foreground">
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 {t("simulation.solution.section")}
               </h2>
-              <p className="text-muted-foreground">
+              <p className="text-sm sm:text-base text-muted-foreground">
                 {t("simulation.solution.subtitle")}
               </p>
             </div>
@@ -147,37 +146,37 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="bg-secondary rounded-xl border border-border p-8"
+            className="bg-secondary rounded-xl border border-border p-6 sm:p-8"
           >
-            <div className="flex items-center gap-3 mb-6">
-              <Lightbulb className="w-6 h-6 text-accent-west" />
-              <h2 className="text-2xl font-bold text-foreground">
+            <div className="flex items-center gap-3 mb-4 sm:mb-6">
+              <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6 text-accent-west" />
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground">
                 {t("learning.title")}
               </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <h3 className="font-semibold text-foreground">
                   {t("learning.concurrent.title")}
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-sm sm:text-base text-muted-foreground">
                   {t("learning.concurrent.description")}
                 </p>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <h3 className="font-semibold text-foreground">
                   {t("learning.prevention.title")}
                 </h3>
-                <p className="text-muted-foreground">
+                <p className="text-sm sm:text-base text-muted-foreground">
                   {t("learning.prevention.description")}
                 </p>
               </div>
             </div>
 
-            <div className="mt-8 p-4 bg-accent-east/10 rounded-lg border border-accent-east/20">
-              <p className="text-sm text-foreground">
+            <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-accent-east/10 rounded-lg border border-accent-east/20">
+              <p className="text-xs sm:text-sm text-foreground">
                 <strong>{t("learning.note")}</strong> {t("learning.reference")}
               </p>
             </div>

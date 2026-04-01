@@ -44,17 +44,16 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
       transition={{ duration: 0.5 }}
       className="bg-card rounded-xl border border-border overflow-hidden shadow-lg"
     >
-      {/* Header com título e botões responsivos */}
-      <div className="p-4 sm:p-6 border-b border-border bg-secondary/50">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="p-3 sm:p-4 md:p-6 border-b border-border bg-secondary/50">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h3 className="text-lg sm:text-xl font-semibold text-foreground">{title}</h3>
+            <h3 className="text-base sm:text-lg md:text-xl font-semibold text-foreground">{title}</h3>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">{description}</p>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={toggleRun}
-              className={`flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium transition-all text-sm sm:text-base ${
+              className={`flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-lg font-medium transition-all text-xs sm:text-sm md:text-base ${
                 running
                   ? "bg-accent-north/20 text-accent-north hover:bg-accent-north/30"
                   : "bg-accent-south/20 text-accent-south hover:bg-accent-south/30"
@@ -62,29 +61,28 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
             >
               {running ? (
                 <>
-                  <Pause className="w-4 h-4" />
+                  <Pause className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{t("simulation.button.pause")}</span>
                 </>
               ) : (
                 <>
-                  <Play className="w-4 h-4" />
+                  <Play className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{t("simulation.button.start")}</span>
                 </>
               )}
             </button>
             <button
               onClick={reset}
-              className="flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-medium bg-muted/50 text-foreground hover:bg-muted transition-all text-sm sm:text-base"
+              className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-lg font-medium bg-muted/50 text-foreground hover:bg-muted transition-all text-xs sm:text-sm md:text-base"
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>{t("simulation.button.restart")}</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Canvas responsivo */}
-      <div className="p-4 sm:p-6 bg-background flex justify-center">
+      <div className="p-3 sm:p-4 md:p-6 bg-background flex justify-center">
         <div
           ref={containerRef}
           className="relative rounded-lg overflow-hidden border border-border w-full max-w-[600px] simulation-drawing-area"
@@ -105,12 +103,12 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
                   ],
                 }}
                 transition={{ duration: 1, repeat: Infinity }}
-                className="bg-card border-2 border-accent-north rounded-xl px-4 py-3 sm:px-8 sm:py-6 text-center"
+                className="bg-card border-2 border-accent-north rounded-xl px-3 py-2 sm:px-6 sm:py-4 md:px-8 md:py-6 text-center"
               >
-                <h4 className="text-lg sm:text-2xl font-bold text-accent-north mb-1 sm:mb-2">
+                <h4 className="text-sm sm:text-lg md:text-2xl font-bold text-accent-north mb-1 sm:mb-2">
                   {t("deadlock.alert")}
                 </h4>
-                <p className="text-xs sm:text-sm text-white">
+                <p className="text-[10px] sm:text-xs md:text-sm text-white">
                   {t("deadlock.message")}
                 </p>
               </motion.div>
@@ -119,17 +117,16 @@ export function SimulationCanvas({ mode, title, description }: SimulationCanvasP
         </div>
       </div>
 
-      {/* Estatísticas responsivas */}
-      <div className="px-4 py-3 sm:px-6 sm:py-4 border-t border-border bg-secondary/30">
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-4">
+      <div className="px-3 py-2 sm:px-4 sm:py-3 md:px-6 md:py-4 border-t border-border bg-secondary/30">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
           <StatCard label={t("stat.completed")} value={stats.completed} color="text-accent-south" />
           <StatCard label={t("stat.waiting")} value={stats.waiting} color="text-accent-west" />
           <StatCard label={t("stat.broken")} value={stats.broken} color="text-accent-north" />
           <StatCard label={t("stat.crossing")} value={stats.crossing} color="text-accent-east" />
           <div className="bg-card rounded-lg p-2 sm:p-3 border border-border">
-            <p className="text-xs text-muted-foreground uppercase tracking-wide">{t("stat.status")}</p>
+            <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wide">{t("stat.status")}</p>
             <p
-              className={`text-sm sm:text-lg font-semibold ${
+              className={`text-sm sm:text-base md:text-lg font-semibold ${
                 stats.deadlocked ? "text-accent-north animate-pulse" : "text-foreground"
               }`}
             >
@@ -154,9 +151,9 @@ interface StatCardProps {
 
 function StatCard({ label, value, color }: StatCardProps) {
   return (
-    <div className="bg-card rounded-lg p-2 sm:p-3 border border-border text-center sm:text-left">
+    <div className="bg-card rounded-lg p-1.5 sm:p-2 md:p-3 border border-border text-center sm:text-left">
       <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wide truncate">{label}</p>
-      <p className={`text-lg sm:text-2xl font-bold ${color}`}>{value}</p>
+      <p className={`text-sm sm:text-lg md:text-2xl font-bold ${color}`}>{value}</p>
     </div>
   );
 }
