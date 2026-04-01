@@ -18,39 +18,53 @@ export function StarsBackground() {
   const particlesRef = useRef<Particle[]>([]);
   const mouseRef = useRef({ x: 0, y: 0, active: false });
   const animationRef = useRef<number>();
-  const [particleColor, setParticleColor] = useState("#2d3748"); // light: cinza escuro
+  const [particleColor, setParticleColor] = useState("#2d3748");
 
-  // Configurações mais ágeis e vivas
-  const COUNT = 180;
-  const MAX_SPEED = 3.2;           // velocidade máxima maior
+  // Configurações
+  const COUNT = 150;
+  const MAX_SPEED = 3.2;
   const MOUSE_RADIUS = 200;
-  const MOUSE_FORCE = 5.5;          // força de repulsão mais forte
-  const PARTICLE_RADIUS = 55;       // raio de repulsão entre partículas
-  const SPRING = 0.025;             // força restauradora mais rápida
-  const DAMPING = 0.97;             // amortecimento leve
-  const TWINKLE_SPEED = 0.03;       // cintilação mais perceptível
+  const MOUSE_FORCE = 5.5;
+  const PARTICLE_RADIUS = 55;
+  const SPRING = 0.025;
+  const DAMPING = 0.97;
+  const TWINKLE_SPEED = 0.03;
 
-  // Observa a classe 'dark' para atualizar a cor
-  useEffect(() => {
-    const updateColor = () => {
-      const isDark = document.documentElement.classList.contains("dark");
+  // Função para ajustar tamanho e opacidade de cada partícula conforme o tema
+  const adjustParticlePropertiesForTheme = () => {
+    const isDark = document.documentElement.classList.contains("dark");
+    particlesRef.current.forEach(p => {
       if (isDark) {
-        setParticleColor("#4a7cbb"); // azul médio, não muito claro
+        p.size = 1.8 + Math.random() * 2.5;
+        p.opacity = 0.4 + Math.random() * 0.6;
       } else {
-        setParticleColor("#2d3748"); // cinza escuro (bom contraste)
+        p.size = 1.2 + Math.random() * 1.5;
+        p.opacity = 0.2 + Math.random() * 0.4;
       }
+    });
+  };
+
+  // Observa a classe 'dark' para atualizar a cor e as propriedades das partículas
+  useEffect(() => {
+    const updateTheme = () => {
+      const isDark = document.documentElement.classList.contains("dark");
+      setParticleColor(isDark ? "#4a7cbb" : "#2d3748");
+      adjustParticlePropertiesForTheme();
     };
-    updateColor();
-    const observer = new MutationObserver(updateColor);
+    updateTheme();
+    const observer = new MutationObserver(updateTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
     return () => observer.disconnect();
   }, []);
 
   const initParticles = (width: number, height: number) => {
+    const isDark = document.documentElement.classList.contains("dark");
     const particles: Particle[] = [];
     for (let i = 0; i < COUNT; i++) {
       const x = Math.random() * width;
       const y = Math.random() * height;
+      const size = isDark ? 1.8 + Math.random() * 2.5 : 1.2 + Math.random() * 1.5;
+      const opacity = isDark ? 0.4 + Math.random() * 0.6 : 0.2 + Math.random() * 0.4;
       particles.push({
         x,
         y,
@@ -58,8 +72,8 @@ export function StarsBackground() {
         homeY: y,
         vx: (Math.random() - 0.5) * 1.8,
         vy: (Math.random() - 0.5) * 1.8,
-        size: 1.8 + Math.random() * 2.5,
-        opacity: 0.4 + Math.random() * 0.6,
+        size,
+        opacity,
       });
     }
     particlesRef.current = particles;
@@ -122,7 +136,7 @@ export function StarsBackground() {
       particles[i].vx *= DAMPING;
       particles[i].vy *= DAMPING;
 
-      // Bordas suaves (restringem o movimento)
+      // Bordas suaves
       if (particles[i].x < 15) particles[i].x = 15;
       if (particles[i].x > width - 15) particles[i].x = width - 15;
       if (particles[i].y < 15) particles[i].y = 15;
@@ -130,7 +144,7 @@ export function StarsBackground() {
 
       // Cintilação
       particles[i].opacity += (Math.random() - 0.5) * TWINKLE_SPEED;
-      if (particles[i].opacity < 0.3) particles[i].opacity = 0.3;
+      if (particles[i].opacity < 0.1) particles[i].opacity = 0.1;
       if (particles[i].opacity > 0.9) particles[i].opacity = 0.9;
     }
   };
@@ -143,7 +157,7 @@ export function StarsBackground() {
       ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       ctx.fillStyle = particleColor;
       ctx.globalAlpha = p.opacity;
-      ctx.shadowBlur = 6;
+      ctx.shadowBlur = 4;
       ctx.shadowColor = particleColor;
       ctx.fill();
     }
